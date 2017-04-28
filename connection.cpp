@@ -82,9 +82,12 @@ std::ostream & operator<<(std::ostream & s, const google::protobuf::Message & m)
 
 
 void create_amazon_world_socket(){
-  int status;
+  int option = 1;
   int amazon_socket;
-
+  const char * host = "127.0.0.1";
+  struct hostent * destination_server;
+  struct sockaddr_in destination_server_addr;
+  
   amazon_socket = socket(AF_INET, SOCK_STREAM, 0);
   if(amazon_socket < 0){
     perror("unable to create socket");
@@ -97,20 +100,32 @@ void create_amazon_world_socket(){
   serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
   serveraddr.sin_port = htons(AMAZON_PORT);
 
-  if(bind(amazon_socket, (struct sockaddr *) &serveraddr, (socklen_t)sizeof(serveraddr))) {
-    perror("Unable to bind");
-    exit(1);
-  }
+  setsockopt(amazon_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 
+  destination_server = gethostbyname(host);
+
+  // memset stuff
+  memset(&destination_server_addr,0,sizeof(destination_server_addr));
+  destination_server_addr.sin_family = AF_INET;
+
+  memcpy(&destination_server_addr.sin_addr.s_addr, destination_server->h_addr, destination_server->h_length);
+  destination_server_addr.sin_port = htons(AMAZON_PORT);
+  
+  if(connect(amazon_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
+    perror("connection failed");
+  }
+  
   // format GPB message
   AConnect amazon_connect;
-  amazon_connect.set_worldid(1);
+  amazon_connect.set_worldid(1003);
   //amazon_connect.set_inithw(1);
   google::protobuf::io::FileOutputStream simout(amazon_socket);
   google::protobuf::io::FileInputStream simin(amazon_socket);
   sendMesgTo(amazon_connect, &simout);
   AConnected aconnected;
   recvMesgFrom(aconnected, &simin);
+  // nothing should print if connecting succeeded
+  std::cout << aconnected << std::endl;
 }
 
 int main(){
