@@ -6,19 +6,28 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <random>
+#include <vector>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "amazon.pb.h"
 #include "amazon.pb.cc"
+#include "db.hpp"
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
+using namespace pqxx;
+
 #define AMAZON_PORT 23456
+#define UPS_PORT 34567
+//#define INT_MAX 9223372036854775807
+#define WORLD_ID 1004
 
 // global socket variable
 int amazon_socket;
-int optval;
+int ups_socket;
+int64_t productID = -1;
 
 //this is adpated from code that a google engineer posted online
 template<typename T> bool sendMesgTo(const T & message,
@@ -80,7 +89,6 @@ std::ostream & operator<<(std::ostream & s, const google::protobuf::Message & m)
   return s<< str;
 }
 
-
 void create_amazon_world_socket(){
   int option = 1;
   int amazon_socket;
@@ -94,6 +102,7 @@ void create_amazon_world_socket(){
     exit(1);
   }
 
+  /*
   struct sockaddr_in serveraddr;
   bzero((char *) &serveraddr, sizeof(serveraddr));
   serveraddr.sin_family = AF_INET;
@@ -101,7 +110,7 @@ void create_amazon_world_socket(){
   serveraddr.sin_port = htons(AMAZON_PORT);
 
   setsockopt(amazon_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-
+  */
   destination_server = gethostbyname(host);
 
   // memset stuff
@@ -117,18 +126,94 @@ void create_amazon_world_socket(){
   
   // format GPB message
   AConnect amazon_connect;
-  amazon_connect.set_worldid(1003);
-  //amazon_connect.set_inithw(1);
+  amazon_connect.set_worldid(WORLD_ID);
   google::protobuf::io::FileOutputStream simout(amazon_socket);
   google::protobuf::io::FileInputStream simin(amazon_socket);
-  sendMesgTo(amazon_connect, &simout);
+  if(sendMesgTo(amazon_connect, &simout)){
+    std::cout << "connection to world initiated...\n";
+  }
   AConnected aconnected;
-  recvMesgFrom(aconnected, &simin);
-  // nothing should print if connecting succeeded
-  std::cout << aconnected << std::endl;
+  if(recvMesgFrom(aconnected, &simin)){
+    std::cout << "connected!\n";
+  }
 }
 
-int main(){
+int create_ID(){
+  productID++;
+  return productID;
+}
+
+void buy_request(){
+  ACommands buyCommand;
+  APurchaseMore *itemDes = buyCommand.add_buy();
+  AProduct *product = itemDes->add_things(); 
+  itemDes->set_whnum(0);
+  product->set_id(10);
+  product->set_description("supersuperduperduper");
+  product->set_count(10);
+  buyCommand.set_simspeed(100);
+
+  google::protobuf::io::FileOutputStream simout(amazon_socket);
+  google::protobuf::io::FileInputStream simin(amazon_socket);
+  if(sendMesgTo(buyCommand, &simout)){
+    std::cout << "new buy request sent to world!\n";
+  }
+  AResponses buyResponse;
+  if(recvMesgFrom(buyResponse, &simin)){
+    std::cout << "received confirmation of buy request from world!\n";
+  }
+
+  //std::cout << buyResponse << std::endl;
+  // at this point the product has been bought and arrived at the warehouse
+
+  /*
+  // UPS stuff
+  int ups_socket;
+  const char * host = "127.0.0.1"; // assume we have a local copy of the UPS executable
+  struct hostent * destination_server;
+  struct sockaddr_in destination_server_addr;
+  
+  ups_socket = socket(AF_INET, SOCK_STREAM, 0);
+  if(ups_socket < 0){
+    perror("unable to create socket for ups");
+    exit(1);
+  }
+
+  destination_server = gethostbyname(host);
+
+  // memset stuff
+  memset(&destination_server_addr,0,sizeof(destination_server_addr));
+  destination_server_addr.sin_family = AF_INET;
+
+  memcpy(&destination_server_addr.sin_addr.s_addr, destination_server->h_addr, destination_server->h_length);
+  destination_server_addr.sin_port = htons(UPS_PORT);
+  
+  if(connect(amazon_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
+    perror("connection failed");
+    exit(1);
+  }
+
+  AProduct newBuyRequest;
+  newBuyRequest.set_id(5); // replace with actual product_id
+  newBuyRequest.set_description("hehehehe"); //replace with actual description
+  newBuyRequest.set_count(10); // replace with actual count
+
+  google::protobuf::io::FileOutputStream simout2(ups_socket);
+  google::protobuf::io::FileInputStream simin2(ups_socket);
+  if(sendMesgTo(newBuyRequest, &simout2)){
+    std::cout << "new buy request sent to UPS!\n";
+  }
+
+  AResponses UPSResponse;
+  if(recvMesgFrom(UPSResponse, &simin2)){
+    std::cout << "received confirmation from UPS!\n";
+  }
+  */
+  
+}
+
+int main(){  
   create_amazon_world_socket();
+  buy_request();
   return 0;
 }
