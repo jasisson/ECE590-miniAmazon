@@ -21,11 +21,9 @@ using namespace pqxx;
 
 #define AMAZON_PORT 23456
 #define UPS_PORT 34567
-//#define INT_MAX 9223372036854775807
 #define WORLD_ID 1004
 
-// global socket variable
-int amazon_socket;
+// global socket variables
 int ups_socket;
 int64_t productID = -1;
 
@@ -89,51 +87,70 @@ std::ostream & operator<<(std::ostream & s, const google::protobuf::Message & m)
   return s<< str;
 }
 
-void create_amazon_world_socket(){
+void create_amazon_world_socket(int * amazon_socket){
   int option = 1;
-  int amazon_socket;
   const char * host = "127.0.0.1";
   struct hostent * destination_server;
   struct sockaddr_in destination_server_addr;
   
-  amazon_socket = socket(AF_INET, SOCK_STREAM, 0);
-  if(amazon_socket < 0){
+  *amazon_socket = socket(AF_INET, SOCK_STREAM, 0);
+  if(*amazon_socket < 0){
     perror("unable to create socket");
     exit(1);
   }
 
-  /*
-  struct sockaddr_in serveraddr;
-  bzero((char *) &serveraddr, sizeof(serveraddr));
-  serveraddr.sin_family = AF_INET;
-  serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  serveraddr.sin_port = htons(AMAZON_PORT);
-
-  setsockopt(amazon_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-  */
   destination_server = gethostbyname(host);
 
-  // memset stuff
   memset(&destination_server_addr,0,sizeof(destination_server_addr));
   destination_server_addr.sin_family = AF_INET;
 
   memcpy(&destination_server_addr.sin_addr.s_addr, destination_server->h_addr, destination_server->h_length);
   destination_server_addr.sin_port = htons(AMAZON_PORT);
   
-  if(connect(amazon_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
+  if(connect(*amazon_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
     perror("connection failed");
   }
+}
+
+void create_amazon_ups_socket(int * ups_socket){
+  int option = 1;
+  const char * host = "127.0.0.1";
+  struct hostent * destination_server;
+  struct sockaddr_in destination_server_addr;
   
+  *ups_socket = socket(AF_INET, SOCK_STREAM, 0);
+  if(*ups_socket < 0){
+    perror("unable to create socket");
+    exit(1);
+  }
+
+  destination_server = gethostbyname(host);
+
+  memset(&destination_server_addr,0,sizeof(destination_server_addr));
+  destination_server_addr.sin_family = AF_INET;
+
+  memcpy(&destination_server_addr.sin_addr.s_addr, destination_server->h_addr, destination_server->h_length);
+  destination_server_addr.sin_port = htons(UPS_PORT);
+  
+  if(connect(*ups_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
+    perror("connection failed");
+  }
+}
+
+
+void connect_to_world(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){   
   // format GPB message
   AConnect amazon_connect;
   amazon_connect.set_worldid(WORLD_ID);
-  google::protobuf::io::FileOutputStream simout(amazon_socket);
-  google::protobuf::io::FileInputStream simin(amazon_socket);
-  if(sendMesgTo(amazon_connect, &simout)){
+  if(sendMesgTo(amazon_connect, simout)){
     std::cout << "connection to world initiated...\n";
   }
   AConnected aconnected;
-  if(recvMesgFrom(aconnected, &simin)){
+  if(recvMesgFrom(aconnected, simin)){
+    //nothing should be printed for error
+    if (aconnected.has_error()) {
+      std::cout << "[ra]"<< aconnected.error() << "\n";
+    }
     std::cout << "connected!\n";
   }
 }
@@ -143,7 +160,7 @@ int create_ID(){
   return productID;
 }
 
-void buy_request(){
+void buy_request(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
   ACommands buyCommand;
   APurchaseMore *itemDes = buyCommand.add_buy();
   AProduct *product = itemDes->add_things(); 
@@ -151,69 +168,111 @@ void buy_request(){
   product->set_id(10);
   product->set_description("supersuperduperduper");
   product->set_count(10);
-  buyCommand.set_simspeed(100);
-
-  google::protobuf::io::FileOutputStream simout(amazon_socket);
-  google::protobuf::io::FileInputStream simin(amazon_socket);
-  if(sendMesgTo(buyCommand, &simout)){
+  buyCommand.set_simspeed(100000000);
+ 
+  if(sendMesgTo(buyCommand, simout)){
     std::cout << "new buy request sent to world!\n";
   }
   AResponses buyResponse;
-  if(recvMesgFrom(buyResponse, &simin)){
+  if(recvMesgFrom(buyResponse, simin)){
     std::cout << "received confirmation of buy request from world!\n";
   }
 
-  //std::cout << buyResponse << std::endl;
-  // at this point the product has been bought and arrived at the warehouse
-
-  /*
   // UPS stuff
-  int ups_socket;
-  const char * host = "127.0.0.1"; // assume we have a local copy of the UPS executable
-  struct hostent * destination_server;
-  struct sockaddr_in destination_server_addr;
-  
-  ups_socket = socket(AF_INET, SOCK_STREAM, 0);
-  if(ups_socket < 0){
-    perror("unable to create socket for ups");
-    exit(1);
-  }
-
-  destination_server = gethostbyname(host);
-
-  // memset stuff
-  memset(&destination_server_addr,0,sizeof(destination_server_addr));
-  destination_server_addr.sin_family = AF_INET;
-
-  memcpy(&destination_server_addr.sin_addr.s_addr, destination_server->h_addr, destination_server->h_length);
-  destination_server_addr.sin_port = htons(UPS_PORT);
-  
-  if(connect(amazon_socket,(struct sockaddr *)& destination_server_addr, sizeof(destination_server_addr)) < 0){
-    perror("connection failed");
-    exit(1);
-  }
-
+  /*
   AProduct newBuyRequest;
   newBuyRequest.set_id(5); // replace with actual product_id
   newBuyRequest.set_description("hehehehe"); //replace with actual description
   newBuyRequest.set_count(10); // replace with actual count
 
-  google::protobuf::io::FileOutputStream simout2(ups_socket);
-  google::protobuf::io::FileInputStream simin2(ups_socket);
-  if(sendMesgTo(newBuyRequest, &simout2)){
+  if(sendMesgTo(newBuyRequest, &simout)){
     std::cout << "new buy request sent to UPS!\n";
   }
-
-  AResponses UPSResponse;
-  if(recvMesgFrom(UPSResponse, &simin2)){
-    std::cout << "received confirmation from UPS!\n";
-  }
   */
-  
 }
 
-int main(){  
-  create_amazon_world_socket();
-  buy_request();
+void pack_request(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
+  ACommands packCommand;
+  APack *packDes = packCommand.add_topack();
+  AProduct *product = packDes->add_things(); 
+  packDes->set_whnum(0);
+  packDes->set_shipid(10);
+  product->set_id(10);
+  product->set_description("supersuperduperduper");
+  product->set_count(10);
+  packCommand.set_simspeed(100000000); 
+  
+  if(sendMesgTo(packCommand, simout)){
+    std::cout << "new pack request sent to world!\n";
+  }
+  AResponses packResponse;
+  if(recvMesgFrom(packResponse, simin)){
+    if(packResponse.has_error()){
+      std::cout << "[ra]"<< packResponse.error() << "\n";
+    }
+    std::cout << "received confirmation of pack request from world! Package is ready.\n";
+  }
+
+  /*
+  // wait for UPS to give us truck information
+  UPSResponses upsResponse;
+  UATruckArrive *truckInfo = upsResponse.add_resp_truck();
+  if(recvMesgFrom(upsResponse, &simin2)){
+    std::cout << "received truck arrival information from UPS.\n";
+  }
+  int truck_id = truckInfo->truckid();
+  int whnum = truckInfo->whnum();
+  int64_t shipid = truckInfo->shipid();
+  */
+}
+
+void load_request(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
+  ACommands loadCommand;
+  APutOnTruck *loadDes = loadCommand.add_load(); 
+  loadDes->set_whnum(0);
+  loadDes->set_truckid(10);
+  loadDes->set_shipid(10);
+  
+  if(sendMesgTo(loadCommand, simout)){
+    std::cout << "new load request sent to world!\n";
+  }
+  AResponses loadResponse;
+  if(recvMesgFrom(loadResponse, simin)){
+    if(loadResponse.has_error()){
+      std::cout << "[ra]"<< loadResponse.error() << "\n";
+    }
+    std::cout << "received confirmation of load request from world!\n";
+  }
+  
+  // tell UPS that we are ready
+  /*  
+  UAShipRequest upsInfo;
+  APack * packageInfo = upsInfo.add_package();
+  AProduct * productInfo = packageInfo->add_things();
+  productInfo->set_id(10);
+  productInfo->set_description("supersuperduperduper");
+  productInfo->set_count(10);
+  packageInfo->set_whnum(0);
+  packageInfo->set_shipid(10);
+  if(sendMesgTo(upsInfo, &simout2)){
+    std::cout << "new ship request sent to UPS!\n";
+  }
+  */
+}
+
+
+int main(){
+  int amazon_socket;
+  int ups_socket;
+  create_amazon_world_socket(&amazon_socket);
+  create_amazon_ups_socket(&ups_socket);
+  google::protobuf::io::FileOutputStream simout(amazon_socket);
+  google::protobuf::io::FileInputStream simin(amazon_socket);
+  google::protobuf::io::FileOutputStream simout2(ups_socket);
+  google::protobuf::io::FileInputStream simin2(ups_socket);
+  connect_to_world(&simout, &simin);
+  buy_request(&simout, &simin, &simout2, &simin2);
+  load_request(&simout, &simin, &simout2, &simin2);
+  pack_request(&simout, &simin, &simout2, &simin2);
   return 0;
 }
