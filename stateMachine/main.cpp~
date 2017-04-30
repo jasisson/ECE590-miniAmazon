@@ -7,7 +7,7 @@
 
 int main(void)
 {
-  /* char chr = 'a'; //This will loop until q is pressed on the terminal
+  /* char chr = 'a';
   /do {
     int num = getc(stdin);
     chr = (char) num;

@@ -9,6 +9,7 @@ using namespace std;
 struct OrderData : public EventData
 {
   int PID;
+  int shippingID;
   string desc;
   int addressX;
   int addressY;
