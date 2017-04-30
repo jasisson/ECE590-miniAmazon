@@ -10,12 +10,14 @@ using namespace pqxx;
 
 int main (int argc, char *argv[]) {
 
-  //Set up socket to website. Init DB
+  //Init DB
   connection *C;
   C = setupDB(1); //If int == 1, reset DB
-  parseInventory(C);
   
+  //Setup socket to website - GPB?
+
   //Get 'Buy' order
+  parseInventory(C);
 
   //Communicate with UPS - Tell which ware house to go to. Receive response with tracking num - GPB
 
