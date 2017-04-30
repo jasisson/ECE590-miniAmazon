@@ -13,19 +13,19 @@ int main(void)
     chr = (char) num;
   */
     //add code to connect to website here. As request comes in, add to queue
-    
-    //Struct for the order, add fields as necessary
-    Order order;
-    OrderData* data = new OrderData();
-    data->PID = 100; //Ex. PID
-    
+     
     //fork into different processes here
     int cpid = fork();
     if (cpid == 0) {
+
+      //Struct for the order, add fields as necessary
+      Order order;
+      OrderData* data = new OrderData();
+      data->PID = 100; //Ex. PID
+
       order.startOrder(data);
       //} 
-    //while(chr != 'q');
+      //while(chr != 'q');
     }
   return 0;
 }
-
