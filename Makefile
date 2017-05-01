@@ -7,4 +7,4 @@ dbsetup: db.cpp main.cpp db.hpp
 	g++ -o dbsetup main.cpp db.cpp -lpqxx -lpq -std=c++11
 
 clean:
-	rm *~ *# runAmazon
+	rm -rf *~ *# runAmazon
