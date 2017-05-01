@@ -16,7 +16,7 @@ CREATE TABLE orders(
        q int8,
        descr text,
        status int4,
-       track_no int8,
+       track_no int8, -- tracking ID, which will be updated from information received from UPS. when the buy request is first created, have this field be -1.
        adx int4,
        ady int4,
        userID int4
