@@ -3,7 +3,7 @@ DROP TABLE orders;
 
 CREATE TABLE inventory(
        pid int8,
-       wid text, -- lists all warehouses that have this produce. e.g. if warehouse 1,2,3 have this, this field would be "1,2,3" where warehouses are separated by comma
+       wid int4, -- lists all warehouses that have this produce. e.g. if warehouse 1,2,3 have this, this field would be "1,2,3" where warehouses are separated by comma
        q int8,
        descr text
 );
@@ -12,7 +12,7 @@ CREATE INDEX items ON inventory (pid,descr);
 
 CREATE TABLE orders(
        pid int8,
-       wid text,
+       wid int4,
        q int8,
        descr text,
        status int4, -- 0 for first entering the database, 1 for when backend has received the order, 2 for when the product is shipping
