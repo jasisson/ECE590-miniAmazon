@@ -19,7 +19,8 @@ CREATE TABLE orders(
        track_no int8, -- tracking ID, which will be updated from information received from UPS. when the buy request is first created, have this field be -1.
        adx int4,
        ady int4,
-       userID int4
+       userID int4,
+       category text
 );
 
 CREATE INDEX orderID ON orders (pid,wid,status);
