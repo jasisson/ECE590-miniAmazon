@@ -170,10 +170,10 @@ void buy_request(int pid, int whnum, int q, string desc, google::protobuf::io::F
   ACommands buyCommand;
   APurchaseMore *itemDes = buyCommand.add_buy();
   AProduct *product = itemDes->add_things();
-  std::cout << pid << std::endl;
-  std::cout << q << std::endl;
-  std::cout << whnum << std::endl;
-  std::cout << desc << std::endl;
+  //std::cout << pid << std::endl;
+  //std::cout << q << std::endl;
+  //std::cout << whnum << std::endl;
+  //std::cout << desc << std::endl;
   itemDes->set_whnum(whnum);
   product->set_id(pid);
   product->set_description(desc);
@@ -183,14 +183,6 @@ void buy_request(int pid, int whnum, int q, string desc, google::protobuf::io::F
   if(sendMesgTo(buyCommand, simout)){
     std::cout << "new buy request sent to world for product (" << desc << ")\n"; 
   }
-  /*AResponses buyResponse;
-  if(recvMesgFrom(buyResponse, simin)){
-    if (buyResponse.has_error()) {
-      std::cout << "[ra]"<< buyResponse.error() << "\n";
-    }
-    std::cout << "received confirmation of buy request from world!\n";
-  }
-  */
 }
 
 void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){
@@ -202,32 +194,43 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
     else{
       int total_arrived = response.arrived_size();
       if(total_arrived > 0){
-	std::cout << "total arrived: " << total_arrived << std::endl;
+	//std::cout << "total arrived: " << total_arrived << std::endl;
 	for(int i = 0; i < total_arrived; i++){
-	  APurchaseMore *world = response.add_arrived();
-	  AProduct *product_info = world[i].add_things();
-	  std::cout << "whnum: " << world[i].whnum()  << std::endl;
-	  int product_size = world[i].things_size();
+	  int whnum = response.arrived(i).whnum();
+	  //std::cout << "whnum: " << response.arrived(i).whnum()  << std::endl;
+	  int product_size = response.arrived(i).things_size();
 	  for(int j = 0; j < product_size; j++){
-	    std::cout << "id: " << product_info[j].id() << std::endl;
-	    std::cout << "count: " << product_info[j].count() << std::endl;
-	    std::cout << "description: " << product_info[j].description() << std::endl;
+	    int id = response.arrived(i).things(j).id();
+	    int count = response.arrived(i).things(j).count();
+	    string description = response.arrived(i).things(j).description();
+	    //std::cout << "id: " << id << std::endl;
+	    //std::cout << "count: " << count << std::endl;
+	    //std::cout << "description: " << description << std::endl;
 	    ACommands packThese;
 	    APack *package = packThese.add_topack();
 	    AProduct *packageInfo = package->add_things();
-	    packageInfo->set_id(1);
-	    packageInfo->set_desc("hehe");
-	    packageInfo->set_count(2);
-	    package->set_whnum(5);
+	    packageInfo->set_id(id);
+	    packageInfo->set_description(description);
+	    packageInfo->set_count(count);
+	    package->set_whnum(whnum);
 	    packThese.set_simspeed(SIM_SPEED);
 	    std::stringstream command;
-	    command << "SELECT * FROM orders WHERE pid = " << pid << "AND count = " << count;
+	    //std::cout << "pid: " << id << " and count: " << count << std::endl;
+	    PGresult *all;
+	    string givemeall= "SELECT * FROM orders";
+	    all = PQexec(dbconn, givemeall.c_str());
+	    //std::cout << "total rows in DB: " << PQntuples(all) << std::endl;
+	    command << "SELECT * FROM orders WHERE pid = " << id << " and q = " << count << """";
+	    //std::cout << "command: " << command.str() << std::endl;
 	    PGresult *query;
 	    query = PQexec(dbconn, command.str().c_str());
+	    int total_rows = PQntuples(query);
+	    //std::cout << "total rows returned from query: " << total_rows << std::endl;
 	    int order_no = atoi(PQgetvalue(query, 0, 10));
+	    //std::cout << "order_no: " << order_no << std::endl;
 	    package->set_shipid(order_no);
 	    if(sendMesgTo(packThese, simout)){
-	      std::cout << "new pack request sent to world for product (" << desc << ")\n"; 
+	      std::cout << "new pack request sent to world for product (" << description << ") which has order number: " << order_no << std::endl; 
 	    }
 	  }
 	}
@@ -236,19 +239,22 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
       std::cout << "total ready: " << total_ready << std::endl;
       if(total_ready > 0){
 	for(int k = 0; k < total_ready; k++){
-	  UATruckArrive truck;
+	  int shipid = response.ready(k);
+	  /*UPSResponses truck;
 	  if(recvMesgFrom(truck, simin2)){
+	    std::cout << "received message from UPS that truck " << truck.resp_truck.truckid() << " has arrived\n";
 	  }
-	  int truckid = truck.truckid();
-	  int whnum = truck.whnum();
-	  int shipid = truck.shipid();
-	  
+	  int truckid = truck.resp_truck.truckid();
+	  int whnum = truck.resp_truck.whnum();
+	  int shipid = truck.resp_truck.shipid();
+	  */
 	  ACommands loadThese;
-	  APutonTruck *package = loadThese.add_load();
-	  package->set_truckid(truckid);
-	  package->set_whnum(whnum);
+	  APutOnTruck *package = loadThese.add_load();
+	  package->set_truckid(0); //get actual truck_id
+	  package->set_whnum(shipid);
 	  package->set_shipid(shipid);
 	  if(sendMesgTo(loadThese, simout)){
+	    std::cout << "sent message to world to load item with order number: " << shipid << std::endl;
 	  }
 	}
       }
@@ -259,79 +265,12 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	  int number = response[l].loaded();
 	  std::stringstream status;
 	  status << "UPDATE orders SET status = 2 WHERE order_no = " << number << """";
+	  PQexec(dbconn, status.str().c_str());
+	  // send UPS msg that we are ready to deliver
 	}
       }
     }
   }
-}
-
-void pack_request(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
-  ACommands packCommand;
-  APack *packDes = packCommand.add_topack();
-  AProduct *product = packDes->add_things(); 
-  packDes->set_whnum(0);
-  packDes->set_shipid(10);
-  product->set_id(10);
-  product->set_description("supersuperduperduper");
-  product->set_count(10);
-  packCommand.set_simspeed(100000000); 
-  
-  if(sendMesgTo(packCommand, simout)){
-    std::cout << "new pack request sent to world!\n";
-  }
-  AResponses packResponse;
-  if(recvMesgFrom(packResponse, simin)){
-    if(packResponse.has_error()){
-      std::cout << "[ra]"<< packResponse.error() << "\n";
-    }
-    std::cout << "received confirmation of pack request from world! Package is ready.\n";
-  }
-
-  /*
-  // wait for UPS to give us truck information
-  UPSResponses upsResponse;
-  UATruckArrive *truckInfo = upsResponse.add_resp_truck();
-  if(recvMesgFrom(upsResponse, &simin2)){
-    std::cout << "received truck arrival information from UPS.\n";
-  }
-  int truck_id = truckInfo->truckid();
-  int whnum = truckInfo->whnum();
-  int64_t shipid = truckInfo->shipid();
-  */
-}
-
-void load_request(google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
-  ACommands loadCommand;
-  APutOnTruck *loadDes = loadCommand.add_load(); 
-  loadDes->set_whnum(0);
-  loadDes->set_truckid(10);
-  loadDes->set_shipid(10);
-  
-  if(sendMesgTo(loadCommand, simout)){
-    std::cout << "new load request sent to world!\n";
-  }
-  AResponses loadResponse;
-  if(recvMesgFrom(loadResponse, simin)){
-    if(loadResponse.has_error()){
-      std::cout << "[ra]"<< loadResponse.error() << "\n";
-    }
-    std::cout << "received confirmation of load request from world!\n";
-  }
-  
-  // tell UPS that we are ready
-  /*  
-  UAShipRequest upsInfo;
-  APack * packageInfo = upsInfo.add_package();
-  AProduct * productInfo = packageInfo->add_things();
-  productInfo->set_id(10);
-  productInfo->set_description("supersuperduperduper");
-  productInfo->set_count(10);
-  packageInfo->set_whnum(0);
-  packageInfo->set_shipid(10);
-  if(sendMesgTo(upsInfo, &simout2)){
-    std::cout << "new ship request sent to UPS!\n";
-  }
-  */
 }
 
 void initialize_database(PGconn *dbconn){
@@ -350,7 +289,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
   int status;
   pid_t w;
   if(pid == 0){ // child process
-    while(1){
+    //while(1){
       // get all the orders that are fresh (i.e. all orders the backend hasn't seen)
       string command = "SELECT * FROM orders WHERE status = 0";
       PGresult *query;
@@ -370,7 +309,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
 	int addy = atoi(PQgetvalue(query, i, 7));
 	buy_request(pid, whnum, q, desc, simout, simin);
       }
-      }
+      //}
   }
   else if(pid > 0){ // parent
     while(1){
@@ -405,6 +344,6 @@ int main(){
   //buy_request(&simout, &simin, &simout2, &simin2);
   //load_request(&simout, &simin, &simout2, &simin2);
   //pack_request(&simout, &simin, &simout2, &simin2);
-  PQfinish(dbconn);
+  //PQfinish(dbconn);
   return 0;
 }
