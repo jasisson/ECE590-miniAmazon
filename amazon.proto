@@ -51,3 +51,27 @@ message AResponses {
    optional string error = 4;
    optional bool finished = 5;
 }
+
+message UAShipRequest {          
+  required APack package = 1;
+  required int32 x = 2;
+  required int32 y = 3;			
+  optional string upsAccount = 4;			   
+}
+
+message UATruckArrive {            
+  required int32 truckid = 1;
+  required int32 whnum = 2;
+  required int64 shipid  = 3;              
+}
+
+message AmazonCommands {
+   optional UAShipRequest req_ship = 1;
+   optional int32 req_deliver_truckid = 2;  
+   optional bool disconnect = 3;         
+}
+
+message UPSResponses {
+    optional UATruckArrive resp_truck = 1;
+}
+    
