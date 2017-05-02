@@ -156,6 +156,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] = {
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, x_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, y_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, id_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, whnum_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, truckid_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AmazonCommands, disconnect_),
   0,
@@ -163,6 +164,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] = {
   2,
   3,
   4,
+  5,
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UPSResponses, _has_bits_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UPSResponses, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -182,8 +184,8 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] = {
   { 60, 69, sizeof(ACommands)},
   { 74, 83, sizeof(AResponses)},
   { 88, 95, sizeof(UATruckArrive)},
-  { 98, 107, sizeof(AmazonCommands)},
-  { 112, 117, sizeof(UPSResponses)},
+  { 98, 108, sizeof(AmazonCommands)},
+  { 114, 119, sizeof(UPSResponses)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -295,14 +297,14 @@ void AddDescriptorsImpl() {
       ".APurchaseMore\022\r\n\005ready\030\002 \003(\003\022\016\n\006loaded\030"
       "\003 \003(\003\022\r\n\005error\030\004 \001(\t\022\020\n\010finished\030\005 \001(\010\"\?"
       "\n\rUATruckArrive\022\017\n\007truckid\030\001 \002(\005\022\r\n\005whnu"
-      "m\030\002 \002(\005\022\016\n\006shipid\030\003 \002(\003\"W\n\016AmazonCommand"
-      "s\022\t\n\001x\030\001 \001(\005\022\t\n\001y\030\002 \001(\005\022\n\n\002id\030\003 \001(\003\022\017\n\007t"
-      "ruckid\030\004 \001(\005\022\022\n\ndisconnect\030\005 \001(\010\"2\n\014UPSR"
-      "esponses\022\"\n\nresp_truck\030\001 \001(\0132\016.UATruckAr"
-      "rive"
+      "m\030\002 \002(\005\022\016\n\006shipid\030\003 \002(\003\"f\n\016AmazonCommand"
+      "s\022\t\n\001x\030\001 \001(\005\022\t\n\001y\030\002 \001(\005\022\n\n\002id\030\003 \001(\003\022\r\n\005w"
+      "hnum\030\004 \001(\005\022\017\n\007truckid\030\005 \001(\005\022\022\n\ndisconnec"
+      "t\030\006 \001(\010\"2\n\014UPSResponses\022\"\n\nresp_truck\030\001 "
+      "\001(\0132\016.UATruckArrive"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 844);
+      descriptor, 859);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "amazon.proto", &protobuf_RegisterTypes);
   ::google::protobuf::internal::OnShutdown(&TableStruct::Shutdown);
@@ -4497,6 +4499,7 @@ void UATruckArrive::set_shipid(::google::protobuf::int64 value) {
 const int AmazonCommands::kXFieldNumber;
 const int AmazonCommands::kYFieldNumber;
 const int AmazonCommands::kIdFieldNumber;
+const int AmazonCommands::kWhnumFieldNumber;
 const int AmazonCommands::kTruckidFieldNumber;
 const int AmazonCommands::kDisconnectFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -4560,7 +4563,7 @@ AmazonCommands* AmazonCommands::New(::google::protobuf::Arena* arena) const {
 
 void AmazonCommands::Clear() {
 // @@protoc_insertion_point(message_clear_start:AmazonCommands)
-  if (_has_bits_[0 / 32] & 31u) {
+  if (_has_bits_[0 / 32] & 63u) {
     ::memset(&x_, 0, reinterpret_cast<char*>(&disconnect_) -
       reinterpret_cast<char*>(&x_) + sizeof(disconnect_));
   }
@@ -4620,10 +4623,24 @@ bool AmazonCommands::MergePartialFromCodedStream(
         break;
       }
 
-      // optional int32 truckid = 4;
+      // optional int32 whnum = 4;
       case 4: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(32u)) {
+          set_has_whnum();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &whnum_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // optional int32 truckid = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(40u)) {
           set_has_truckid();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
@@ -4634,10 +4651,10 @@ bool AmazonCommands::MergePartialFromCodedStream(
         break;
       }
 
-      // optional bool disconnect = 5;
-      case 5: {
+      // optional bool disconnect = 6;
+      case 6: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(40u)) {
+            static_cast< ::google::protobuf::uint8>(48u)) {
           set_has_disconnect();
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
@@ -4688,14 +4705,19 @@ void AmazonCommands::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->id(), output);
   }
 
-  // optional int32 truckid = 4;
-  if (has_truckid()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->truckid(), output);
+  // optional int32 whnum = 4;
+  if (has_whnum()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->whnum(), output);
   }
 
-  // optional bool disconnect = 5;
+  // optional int32 truckid = 5;
+  if (has_truckid()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->truckid(), output);
+  }
+
+  // optional bool disconnect = 6;
   if (has_disconnect()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->disconnect(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteBool(6, this->disconnect(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4724,14 +4746,19 @@ void AmazonCommands::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->id(), target);
   }
 
-  // optional int32 truckid = 4;
-  if (has_truckid()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->truckid(), target);
+  // optional int32 whnum = 4;
+  if (has_whnum()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->whnum(), target);
   }
 
-  // optional bool disconnect = 5;
+  // optional int32 truckid = 5;
+  if (has_truckid()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->truckid(), target);
+  }
+
+  // optional bool disconnect = 6;
   if (has_disconnect()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->disconnect(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(6, this->disconnect(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4751,7 +4778,7 @@ size_t AmazonCommands::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         unknown_fields());
   }
-  if (_has_bits_[0 / 32] & 31u) {
+  if (_has_bits_[0 / 32] & 63u) {
     // optional int32 x = 1;
     if (has_x()) {
       total_size += 1 +
@@ -4773,14 +4800,21 @@ size_t AmazonCommands::ByteSizeLong() const {
           this->id());
     }
 
-    // optional int32 truckid = 4;
+    // optional int32 whnum = 4;
+    if (has_whnum()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->whnum());
+    }
+
+    // optional int32 truckid = 5;
     if (has_truckid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->truckid());
     }
 
-    // optional bool disconnect = 5;
+    // optional bool disconnect = 6;
     if (has_disconnect()) {
       total_size += 1 + 1;
     }
@@ -4812,7 +4846,7 @@ void AmazonCommands::MergeFrom(const AmazonCommands& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:AmazonCommands)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from._has_bits_[0 / 32] & 31u) {
+  if (from._has_bits_[0 / 32] & 63u) {
     if (from.has_x()) {
       set_x(from.x());
     }
@@ -4821,6 +4855,9 @@ void AmazonCommands::MergeFrom(const AmazonCommands& from) {
     }
     if (from.has_id()) {
       set_id(from.id());
+    }
+    if (from.has_whnum()) {
+      set_whnum(from.whnum());
     }
     if (from.has_truckid()) {
       set_truckid(from.truckid());
@@ -4857,6 +4894,7 @@ void AmazonCommands::InternalSwap(AmazonCommands* other) {
   std::swap(x_, other->x_);
   std::swap(y_, other->y_);
   std::swap(id_, other->id_);
+  std::swap(whnum_, other->whnum_);
   std::swap(truckid_, other->truckid_);
   std::swap(disconnect_, other->disconnect_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
@@ -4944,15 +4982,39 @@ void AmazonCommands::set_id(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:AmazonCommands.id)
 }
 
-// optional int32 truckid = 4;
-bool AmazonCommands::has_truckid() const {
+// optional int32 whnum = 4;
+bool AmazonCommands::has_whnum() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-void AmazonCommands::set_has_truckid() {
+void AmazonCommands::set_has_whnum() {
   _has_bits_[0] |= 0x00000008u;
 }
-void AmazonCommands::clear_has_truckid() {
+void AmazonCommands::clear_has_whnum() {
   _has_bits_[0] &= ~0x00000008u;
+}
+void AmazonCommands::clear_whnum() {
+  whnum_ = 0;
+  clear_has_whnum();
+}
+::google::protobuf::int32 AmazonCommands::whnum() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.whnum)
+  return whnum_;
+}
+void AmazonCommands::set_whnum(::google::protobuf::int32 value) {
+  set_has_whnum();
+  whnum_ = value;
+  // @@protoc_insertion_point(field_set:AmazonCommands.whnum)
+}
+
+// optional int32 truckid = 5;
+bool AmazonCommands::has_truckid() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void AmazonCommands::set_has_truckid() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void AmazonCommands::clear_has_truckid() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 void AmazonCommands::clear_truckid() {
   truckid_ = 0;
@@ -4968,15 +5030,15 @@ void AmazonCommands::set_truckid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:AmazonCommands.truckid)
 }
 
-// optional bool disconnect = 5;
+// optional bool disconnect = 6;
 bool AmazonCommands::has_disconnect() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 void AmazonCommands::set_has_disconnect() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000020u;
 }
 void AmazonCommands::clear_has_disconnect() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 void AmazonCommands::clear_disconnect() {
   disconnect_ = false;

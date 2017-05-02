@@ -62,8 +62,9 @@ message AmazonCommands {
    optional int32 x = 1;
    optional int32 y = 2;
    optional int64 id = 3;
-   optional int32 truckid = 4;  
-   optional bool disconnect = 5;         
+   optional int32 whnum = 4;
+   optional int32 truckid = 5;  
+   optional bool disconnect = 6;         
 }
 
 message UPSResponses {

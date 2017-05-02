@@ -1381,17 +1381,24 @@ class AmazonCommands : public ::google::protobuf::Message /* @@protoc_insertion_
   ::google::protobuf::int64 id() const;
   void set_id(::google::protobuf::int64 value);
 
-  // optional int32 truckid = 4;
+  // optional int32 whnum = 4;
+  bool has_whnum() const;
+  void clear_whnum();
+  static const int kWhnumFieldNumber = 4;
+  ::google::protobuf::int32 whnum() const;
+  void set_whnum(::google::protobuf::int32 value);
+
+  // optional int32 truckid = 5;
   bool has_truckid() const;
   void clear_truckid();
-  static const int kTruckidFieldNumber = 4;
+  static const int kTruckidFieldNumber = 5;
   ::google::protobuf::int32 truckid() const;
   void set_truckid(::google::protobuf::int32 value);
 
-  // optional bool disconnect = 5;
+  // optional bool disconnect = 6;
   bool has_disconnect() const;
   void clear_disconnect();
-  static const int kDisconnectFieldNumber = 5;
+  static const int kDisconnectFieldNumber = 6;
   bool disconnect() const;
   void set_disconnect(bool value);
 
@@ -1403,6 +1410,8 @@ class AmazonCommands : public ::google::protobuf::Message /* @@protoc_insertion_
   void clear_has_y();
   void set_has_id();
   void clear_has_id();
+  void set_has_whnum();
+  void clear_has_whnum();
   void set_has_truckid();
   void clear_has_truckid();
   void set_has_disconnect();
@@ -1414,6 +1423,7 @@ class AmazonCommands : public ::google::protobuf::Message /* @@protoc_insertion_
   ::google::protobuf::int32 x_;
   ::google::protobuf::int32 y_;
   ::google::protobuf::int64 id_;
+  ::google::protobuf::int32 whnum_;
   ::google::protobuf::int32 truckid_;
   bool disconnect_;
   friend struct protobuf_amazon_2eproto::TableStruct;
@@ -2499,15 +2509,39 @@ inline void AmazonCommands::set_id(::google::protobuf::int64 value) {
   // @@protoc_insertion_point(field_set:AmazonCommands.id)
 }
 
-// optional int32 truckid = 4;
-inline bool AmazonCommands::has_truckid() const {
+// optional int32 whnum = 4;
+inline bool AmazonCommands::has_whnum() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void AmazonCommands::set_has_truckid() {
+inline void AmazonCommands::set_has_whnum() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void AmazonCommands::clear_has_truckid() {
+inline void AmazonCommands::clear_has_whnum() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void AmazonCommands::clear_whnum() {
+  whnum_ = 0;
+  clear_has_whnum();
+}
+inline ::google::protobuf::int32 AmazonCommands::whnum() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.whnum)
+  return whnum_;
+}
+inline void AmazonCommands::set_whnum(::google::protobuf::int32 value) {
+  set_has_whnum();
+  whnum_ = value;
+  // @@protoc_insertion_point(field_set:AmazonCommands.whnum)
+}
+
+// optional int32 truckid = 5;
+inline bool AmazonCommands::has_truckid() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void AmazonCommands::set_has_truckid() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void AmazonCommands::clear_has_truckid() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void AmazonCommands::clear_truckid() {
   truckid_ = 0;
@@ -2523,15 +2557,15 @@ inline void AmazonCommands::set_truckid(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:AmazonCommands.truckid)
 }
 
-// optional bool disconnect = 5;
+// optional bool disconnect = 6;
 inline bool AmazonCommands::has_disconnect() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void AmazonCommands::set_has_disconnect() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void AmazonCommands::clear_has_disconnect() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void AmazonCommands::clear_disconnect() {
   disconnect_ = false;
