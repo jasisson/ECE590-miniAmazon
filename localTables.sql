@@ -20,7 +20,8 @@ CREATE TABLE orders(
        adx int4,
        ady int4,
        userID int4,
-       category text
+       category text,
+       order_no int4
 );
 
 CREATE INDEX orderID ON orders (pid,wid,status);

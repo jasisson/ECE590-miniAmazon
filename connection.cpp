@@ -16,16 +16,19 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
+#include <pqxx/pqxx>
+#include <postgresql/libpq-fe.h>
 
 using namespace pqxx;
 
 #define AMAZON_PORT 23456
 #define UPS_PORT 34567
-#define WORLD_ID 1004
+#define WORLD_ID 1005
 
 // global socket variables
 int ups_socket;
 int64_t productID = -1;
+int insertDB = 1;
 
 //this is adpated from code that a google engineer posted online
 template<typename T> bool sendMesgTo(const T & message,
@@ -260,19 +263,69 @@ void load_request(google::protobuf::io::FileOutputStream * simout, google::proto
   */
 }
 
+void initialize_database(PGconn *dbconn){
+  if(insertDB){
+    string del = "DELETE FROM orders";
+    PQexec(dbconn, del.c_str());
+    string command = "INSERT INTO orders VALUES(1,1,10,'iphone',0,-1,2,3,105,'tech',1)";
+    PQexec(dbconn, command.c_str());
+    string command2 = "INSERT INTO orders VALUES(2,2,5,'laptop',0,-1,100,50,100,'tech',2)";
+    PQexec(dbconn, command2.c_str());
+  }
+}
+
+void obtain_buy_request(PGconn *dbconn){
+  string command = "SELECT * FROM orders WHERE status = 0";
+  PGresult *query;
+  query = PQexec(dbconn, command.c_str());
+  int total_rows = PQntuples(query);
+  std::cout << "total rows: " << total_rows << std::endl;
+  std::cout << PQgetvalue(query, 0, 3) << std::endl;
+  std::cout << PQgetvalue(query, 1, 3) << std::endl;
+}
+
+void start_amazon(PGconn *dbconn){
+  int pid;
+  pid = fork();
+  if(pid == 0){ // child process
+    while(1){
+      // get all the orders that are fresh (i.e. all orders the backend hasn't seen)
+      string command = "SELECT * FROM orders WHERE status = 0";
+      PGresult *query;
+      query = PQexec(dbconn, command.c_str());
+      int total_rows = PQntuples(query);
+      for(int i = 0; i < total_rows; i++){
+	
+      }
+    }
+  }
+  else{ // parent
+    
+  }
+}
 
 int main(){
   int amazon_socket;
   int ups_socket;
-  create_amazon_world_socket(&amazon_socket);
-  create_amazon_ups_socket(&ups_socket);
+  //create_amazon_world_socket(&amazon_socket);
+  //create_amazon_ups_socket(&ups_socket);
   google::protobuf::io::FileOutputStream simout(amazon_socket);
   google::protobuf::io::FileInputStream simin(amazon_socket);
   google::protobuf::io::FileOutputStream simout2(ups_socket);
   google::protobuf::io::FileInputStream simin2(ups_socket);
-  connect_to_world(&simout, &simin);
-  buy_request(&simout, &simin, &simout2, &simin2);
-  load_request(&simout, &simin, &simout2, &simin2);
-  pack_request(&simout, &simin, &simout2, &simin2);
+  //connect_to_world(&simout, &simin);
+  // query the database to see if there are any new buy requests  
+  PGconn *dbconn;
+  dbconn = PQconnectdb("dbname=localdb user=postgres password=passw0rd");
+  if(PQstatus(dbconn) == CONNECTION_BAD){
+    perror("unable to connect to db");
+  }
+  initialize_database(dbconn);
+  start_amazon(dbconn);
+  obtain_buy_request(dbconn);
+  //buy_request(&simout, &simin, &simout2, &simin2);
+  //load_request(&simout, &simin, &simout2, &simin2);
+  //pack_request(&simout, &simin, &simout2, &simin2);
+  PQfinish(dbconn);
   return 0;
 }
