@@ -161,11 +161,6 @@ void connect_to_world(google::protobuf::io::FileOutputStream * simout, google::p
   }
 }
 
-int create_ID(){
-  productID++;
-  return productID;
-}
-
 void buy_request(int pid, int whnum, int q, string desc, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){
   ACommands buyCommand;
   APurchaseMore *itemDes = buyCommand.add_buy();
@@ -236,7 +231,7 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	}
       }
       int total_ready = response.ready_size();
-      std::cout << "total ready: " << total_ready << std::endl;
+      //std::cout << "total ready: " << total_ready << std::endl;
       if(total_ready > 0){
 	for(int k = 0; k < total_ready; k++){
 	  int shipid = response.ready(k);
@@ -258,17 +253,18 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	  }
 	}
       }
-      int total_loaded = response.loaded_size();
-      std::cout << "total loaded: " << total_loaded << std::endl;
+      /*int total_loaded = response.loaded_size();
+      //std::cout << "total loaded: " << total_loaded << std::endl;
       if(total_loaded > 0){
 	for(int l = 0; l < total_loaded; l++){
-	  int number = response[l].loaded();
+	  int number = response.loaded(l);
 	  std::stringstream status;
 	  status << "UPDATE orders SET status = 2 WHERE order_no = " << number << """";
 	  PQexec(dbconn, status.str().c_str());
 	  // send UPS msg that we are ready to deliver
 	}
       }
+      */
     }
   }
 }
@@ -289,27 +285,38 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
   int status;
   pid_t w;
   if(pid == 0){ // child process
-    //while(1){
+    while(1){
+      usleep(1000000);
       // get all the orders that are fresh (i.e. all orders the backend hasn't seen)
       string command = "SELECT * FROM orders WHERE status = 0";
       PGresult *query;
       query = PQexec(dbconn, command.c_str());
       int total_rows = PQntuples(query);
-      //std::cout << total_rows << std::endl;
-      for(int i = 0; i < total_rows; i++){
-	int order_no = atoi(PQgetvalue(query, i, 10));
-	std::stringstream command;
-	command << "UPDATE orders SET status = 1 WHERE order_no = " << order_no << """";
-	PQexec(dbconn, command.str().c_str());
-	int pid = atoi(PQgetvalue(query, i, 0));
-	int whnum = atoi(PQgetvalue(query, i, 1));
-	int q = atoi(PQgetvalue(query, i, 2));
-	string desc = PQgetvalue(query, i, 3);
-	int addx = atoi(PQgetvalue(query, i, 6));
-	int addy = atoi(PQgetvalue(query, i, 7));
-	buy_request(pid, whnum, q, desc, simout, simin);
+      std::cout << "total_rows: " << total_rows << std::endl;
+      if(total_rows != 0){
+	for(int i = 0; i < total_rows; i++){
+	  int total_rows = PQntuples(query);
+	  int pid = atoi(PQgetvalue(query, i, 0));
+	  int whnum = atoi(PQgetvalue(query, i, 1));
+	  int q = atoi(PQgetvalue(query, i, 2));
+	  string desc = PQgetvalue(query, i, 3);
+	  int addx = atoi(PQgetvalue(query, i, 6));
+	  int addy = atoi(PQgetvalue(query, i, 7));
+	  buy_request(pid, whnum, q, desc, simout, simin);
+	  int order_no = atoi(PQgetvalue(query, i, 10));
+	  std::stringstream update;
+	  update << "UPDATE orders SET status = 1 WHERE order_no = " << order_no << """";
+	  PQexec(dbconn, update.str().c_str());
+	  string showall = "SELECT * FROM orders";
+	  PGresult *show;
+	  show = PQexec(dbconn, showall.c_str());
+	  int all = PQntuples(show);
+	  for(int n =0; n < all; n++){
+	    std::cout << "in START_AMAZON: here is the current state of DB -> " << PQgetvalue(show, n, 3) << " " << atoi(PQgetvalue(show, n, 4)) << std::endl; 
+	  }
+	}
       }
-      //}
+    }
   }
   else if(pid > 0){ // parent
     while(1){
@@ -332,7 +339,8 @@ int main(){
   //google::protobuf::io::FileOutputStream simout2(ups_socket);
   //google::protobuf::io::FileInputStream simin2(ups_socket);
   connect_to_world(&simout, &simin);
-  // query the database to see if there are any new buy requests  
+  //create_amazon_ups_socket(&ups_socket);
+  
   PGconn *dbconn;
   dbconn = PQconnectdb("dbname=localdb user=postgres password=passw0rd");
   if(PQstatus(dbconn) == CONNECTION_BAD){
@@ -340,10 +348,5 @@ int main(){
   }
   initialize_database(dbconn);
   start_amazon(dbconn, &simout, &simin);
-  //obtain_buy_request(dbconn);
-  //buy_request(&simout, &simin, &simout2, &simin2);
-  //load_request(&simout, &simin, &simout2, &simin2);
-  //pack_request(&simout, &simin, &simout2, &simin2);
-  //PQfinish(dbconn);
   return 0;
 }

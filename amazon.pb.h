@@ -56,6 +56,18 @@ extern APutOnTruckDefaultTypeInternal _APutOnTruck_default_instance_;
 class AResponses;
 class AResponsesDefaultTypeInternal;
 extern AResponsesDefaultTypeInternal _AResponses_default_instance_;
+class AmazonCommands;
+class AmazonCommandsDefaultTypeInternal;
+extern AmazonCommandsDefaultTypeInternal _AmazonCommands_default_instance_;
+class UAShipRequest;
+class UAShipRequestDefaultTypeInternal;
+extern UAShipRequestDefaultTypeInternal _UAShipRequest_default_instance_;
+class UATruckArrive;
+class UATruckArriveDefaultTypeInternal;
+extern UATruckArriveDefaultTypeInternal _UATruckArrive_default_instance_;
+class UPSResponses;
+class UPSResponsesDefaultTypeInternal;
+extern UPSResponsesDefaultTypeInternal _UPSResponses_default_instance_;
 
 namespace protobuf_amazon_2eproto {
 // Internal implementation detail -- do not call these.
@@ -1156,6 +1168,476 @@ class AResponses : public ::google::protobuf::Message /* @@protoc_insertion_poin
   bool finished_;
   friend struct protobuf_amazon_2eproto::TableStruct;
 };
+// -------------------------------------------------------------------
+
+class UAShipRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UAShipRequest) */ {
+ public:
+  UAShipRequest();
+  virtual ~UAShipRequest();
+
+  UAShipRequest(const UAShipRequest& from);
+
+  inline UAShipRequest& operator=(const UAShipRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UAShipRequest& default_instance();
+
+  static inline const UAShipRequest* internal_default_instance() {
+    return reinterpret_cast<const UAShipRequest*>(
+               &_UAShipRequest_default_instance_);
+  }
+
+  void Swap(UAShipRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UAShipRequest* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UAShipRequest* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UAShipRequest& from);
+  void MergeFrom(const UAShipRequest& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UAShipRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string upsAccount = 4;
+  bool has_upsaccount() const;
+  void clear_upsaccount();
+  static const int kUpsAccountFieldNumber = 4;
+  const ::std::string& upsaccount() const;
+  void set_upsaccount(const ::std::string& value);
+  #if LANG_CXX11
+  void set_upsaccount(::std::string&& value);
+  #endif
+  void set_upsaccount(const char* value);
+  void set_upsaccount(const char* value, size_t size);
+  ::std::string* mutable_upsaccount();
+  ::std::string* release_upsaccount();
+  void set_allocated_upsaccount(::std::string* upsaccount);
+
+  // required .APack package = 1;
+  bool has_package() const;
+  void clear_package();
+  static const int kPackageFieldNumber = 1;
+  const ::APack& package() const;
+  ::APack* mutable_package();
+  ::APack* release_package();
+  void set_allocated_package(::APack* package);
+
+  // required int32 x = 2;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 2;
+  ::google::protobuf::int32 x() const;
+  void set_x(::google::protobuf::int32 value);
+
+  // required int32 y = 3;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 3;
+  ::google::protobuf::int32 y() const;
+  void set_y(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:UAShipRequest)
+ private:
+  void set_has_package();
+  void clear_has_package();
+  void set_has_x();
+  void clear_has_x();
+  void set_has_y();
+  void clear_has_y();
+  void set_has_upsaccount();
+  void clear_has_upsaccount();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr upsaccount_;
+  ::APack* package_;
+  ::google::protobuf::int32 x_;
+  ::google::protobuf::int32 y_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class UATruckArrive : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UATruckArrive) */ {
+ public:
+  UATruckArrive();
+  virtual ~UATruckArrive();
+
+  UATruckArrive(const UATruckArrive& from);
+
+  inline UATruckArrive& operator=(const UATruckArrive& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UATruckArrive& default_instance();
+
+  static inline const UATruckArrive* internal_default_instance() {
+    return reinterpret_cast<const UATruckArrive*>(
+               &_UATruckArrive_default_instance_);
+  }
+
+  void Swap(UATruckArrive* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UATruckArrive* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UATruckArrive* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UATruckArrive& from);
+  void MergeFrom(const UATruckArrive& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UATruckArrive* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required int32 truckid = 1;
+  bool has_truckid() const;
+  void clear_truckid();
+  static const int kTruckidFieldNumber = 1;
+  ::google::protobuf::int32 truckid() const;
+  void set_truckid(::google::protobuf::int32 value);
+
+  // required int32 whnum = 2;
+  bool has_whnum() const;
+  void clear_whnum();
+  static const int kWhnumFieldNumber = 2;
+  ::google::protobuf::int32 whnum() const;
+  void set_whnum(::google::protobuf::int32 value);
+
+  // required int64 shipid = 3;
+  bool has_shipid() const;
+  void clear_shipid();
+  static const int kShipidFieldNumber = 3;
+  ::google::protobuf::int64 shipid() const;
+  void set_shipid(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:UATruckArrive)
+ private:
+  void set_has_truckid();
+  void clear_has_truckid();
+  void set_has_whnum();
+  void clear_has_whnum();
+  void set_has_shipid();
+  void clear_has_shipid();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::int32 truckid_;
+  ::google::protobuf::int32 whnum_;
+  ::google::protobuf::int64 shipid_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class AmazonCommands : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:AmazonCommands) */ {
+ public:
+  AmazonCommands();
+  virtual ~AmazonCommands();
+
+  AmazonCommands(const AmazonCommands& from);
+
+  inline AmazonCommands& operator=(const AmazonCommands& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AmazonCommands& default_instance();
+
+  static inline const AmazonCommands* internal_default_instance() {
+    return reinterpret_cast<const AmazonCommands*>(
+               &_AmazonCommands_default_instance_);
+  }
+
+  void Swap(AmazonCommands* other);
+
+  // implements Message ----------------------------------------------
+
+  inline AmazonCommands* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  AmazonCommands* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const AmazonCommands& from);
+  void MergeFrom(const AmazonCommands& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(AmazonCommands* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .UAShipRequest req_ship = 1;
+  bool has_req_ship() const;
+  void clear_req_ship();
+  static const int kReqShipFieldNumber = 1;
+  const ::UAShipRequest& req_ship() const;
+  ::UAShipRequest* mutable_req_ship();
+  ::UAShipRequest* release_req_ship();
+  void set_allocated_req_ship(::UAShipRequest* req_ship);
+
+  // optional int32 req_deliver_truckid = 2;
+  bool has_req_deliver_truckid() const;
+  void clear_req_deliver_truckid();
+  static const int kReqDeliverTruckidFieldNumber = 2;
+  ::google::protobuf::int32 req_deliver_truckid() const;
+  void set_req_deliver_truckid(::google::protobuf::int32 value);
+
+  // optional bool disconnect = 3;
+  bool has_disconnect() const;
+  void clear_disconnect();
+  static const int kDisconnectFieldNumber = 3;
+  bool disconnect() const;
+  void set_disconnect(bool value);
+
+  // @@protoc_insertion_point(class_scope:AmazonCommands)
+ private:
+  void set_has_req_ship();
+  void clear_has_req_ship();
+  void set_has_req_deliver_truckid();
+  void clear_has_req_deliver_truckid();
+  void set_has_disconnect();
+  void clear_has_disconnect();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::UAShipRequest* req_ship_;
+  ::google::protobuf::int32 req_deliver_truckid_;
+  bool disconnect_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class UPSResponses : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UPSResponses) */ {
+ public:
+  UPSResponses();
+  virtual ~UPSResponses();
+
+  UPSResponses(const UPSResponses& from);
+
+  inline UPSResponses& operator=(const UPSResponses& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UPSResponses& default_instance();
+
+  static inline const UPSResponses* internal_default_instance() {
+    return reinterpret_cast<const UPSResponses*>(
+               &_UPSResponses_default_instance_);
+  }
+
+  void Swap(UPSResponses* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UPSResponses* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UPSResponses* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UPSResponses& from);
+  void MergeFrom(const UPSResponses& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UPSResponses* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional .UATruckArrive resp_truck = 1;
+  bool has_resp_truck() const;
+  void clear_resp_truck();
+  static const int kRespTruckFieldNumber = 1;
+  const ::UATruckArrive& resp_truck() const;
+  ::UATruckArrive* mutable_resp_truck();
+  ::UATruckArrive* release_resp_truck();
+  void set_allocated_resp_truck(::UATruckArrive* resp_truck);
+
+  // @@protoc_insertion_point(class_scope:UPSResponses)
+ private:
+  void set_has_resp_truck();
+  void clear_has_resp_truck();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::UATruckArrive* resp_truck_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
 // ===================================================================
 
 
@@ -1988,7 +2470,396 @@ inline void AResponses::set_finished(bool value) {
   // @@protoc_insertion_point(field_set:AResponses.finished)
 }
 
+// -------------------------------------------------------------------
+
+// UAShipRequest
+
+// required .APack package = 1;
+inline bool UAShipRequest::has_package() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UAShipRequest::set_has_package() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UAShipRequest::clear_has_package() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UAShipRequest::clear_package() {
+  if (package_ != NULL) package_->::APack::Clear();
+  clear_has_package();
+}
+inline const ::APack& UAShipRequest::package() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.package)
+  return package_ != NULL ? *package_
+                         : *::APack::internal_default_instance();
+}
+inline ::APack* UAShipRequest::mutable_package() {
+  set_has_package();
+  if (package_ == NULL) {
+    package_ = new ::APack;
+  }
+  // @@protoc_insertion_point(field_mutable:UAShipRequest.package)
+  return package_;
+}
+inline ::APack* UAShipRequest::release_package() {
+  // @@protoc_insertion_point(field_release:UAShipRequest.package)
+  clear_has_package();
+  ::APack* temp = package_;
+  package_ = NULL;
+  return temp;
+}
+inline void UAShipRequest::set_allocated_package(::APack* package) {
+  delete package_;
+  package_ = package;
+  if (package) {
+    set_has_package();
+  } else {
+    clear_has_package();
+  }
+  // @@protoc_insertion_point(field_set_allocated:UAShipRequest.package)
+}
+
+// required int32 x = 2;
+inline bool UAShipRequest::has_x() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UAShipRequest::set_has_x() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UAShipRequest::clear_has_x() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UAShipRequest::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline ::google::protobuf::int32 UAShipRequest::x() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.x)
+  return x_;
+}
+inline void UAShipRequest::set_x(::google::protobuf::int32 value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:UAShipRequest.x)
+}
+
+// required int32 y = 3;
+inline bool UAShipRequest::has_y() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void UAShipRequest::set_has_y() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void UAShipRequest::clear_has_y() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void UAShipRequest::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline ::google::protobuf::int32 UAShipRequest::y() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.y)
+  return y_;
+}
+inline void UAShipRequest::set_y(::google::protobuf::int32 value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:UAShipRequest.y)
+}
+
+// optional string upsAccount = 4;
+inline bool UAShipRequest::has_upsaccount() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UAShipRequest::set_has_upsaccount() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UAShipRequest::clear_has_upsaccount() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UAShipRequest::clear_upsaccount() {
+  upsaccount_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_upsaccount();
+}
+inline const ::std::string& UAShipRequest::upsaccount() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.upsAccount)
+  return upsaccount_.GetNoArena();
+}
+inline void UAShipRequest::set_upsaccount(const ::std::string& value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:UAShipRequest.upsAccount)
+}
+#if LANG_CXX11
+inline void UAShipRequest::set_upsaccount(::std::string&& value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:UAShipRequest.upsAccount)
+}
+#endif
+inline void UAShipRequest::set_upsaccount(const char* value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:UAShipRequest.upsAccount)
+}
+inline void UAShipRequest::set_upsaccount(const char* value, size_t size) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:UAShipRequest.upsAccount)
+}
+inline ::std::string* UAShipRequest::mutable_upsaccount() {
+  set_has_upsaccount();
+  // @@protoc_insertion_point(field_mutable:UAShipRequest.upsAccount)
+  return upsaccount_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UAShipRequest::release_upsaccount() {
+  // @@protoc_insertion_point(field_release:UAShipRequest.upsAccount)
+  clear_has_upsaccount();
+  return upsaccount_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UAShipRequest::set_allocated_upsaccount(::std::string* upsaccount) {
+  if (upsaccount != NULL) {
+    set_has_upsaccount();
+  } else {
+    clear_has_upsaccount();
+  }
+  upsaccount_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upsaccount);
+  // @@protoc_insertion_point(field_set_allocated:UAShipRequest.upsAccount)
+}
+
+// -------------------------------------------------------------------
+
+// UATruckArrive
+
+// required int32 truckid = 1;
+inline bool UATruckArrive::has_truckid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UATruckArrive::set_has_truckid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UATruckArrive::clear_has_truckid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UATruckArrive::clear_truckid() {
+  truckid_ = 0;
+  clear_has_truckid();
+}
+inline ::google::protobuf::int32 UATruckArrive::truckid() const {
+  // @@protoc_insertion_point(field_get:UATruckArrive.truckid)
+  return truckid_;
+}
+inline void UATruckArrive::set_truckid(::google::protobuf::int32 value) {
+  set_has_truckid();
+  truckid_ = value;
+  // @@protoc_insertion_point(field_set:UATruckArrive.truckid)
+}
+
+// required int32 whnum = 2;
+inline bool UATruckArrive::has_whnum() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UATruckArrive::set_has_whnum() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UATruckArrive::clear_has_whnum() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UATruckArrive::clear_whnum() {
+  whnum_ = 0;
+  clear_has_whnum();
+}
+inline ::google::protobuf::int32 UATruckArrive::whnum() const {
+  // @@protoc_insertion_point(field_get:UATruckArrive.whnum)
+  return whnum_;
+}
+inline void UATruckArrive::set_whnum(::google::protobuf::int32 value) {
+  set_has_whnum();
+  whnum_ = value;
+  // @@protoc_insertion_point(field_set:UATruckArrive.whnum)
+}
+
+// required int64 shipid = 3;
+inline bool UATruckArrive::has_shipid() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UATruckArrive::set_has_shipid() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UATruckArrive::clear_has_shipid() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UATruckArrive::clear_shipid() {
+  shipid_ = GOOGLE_LONGLONG(0);
+  clear_has_shipid();
+}
+inline ::google::protobuf::int64 UATruckArrive::shipid() const {
+  // @@protoc_insertion_point(field_get:UATruckArrive.shipid)
+  return shipid_;
+}
+inline void UATruckArrive::set_shipid(::google::protobuf::int64 value) {
+  set_has_shipid();
+  shipid_ = value;
+  // @@protoc_insertion_point(field_set:UATruckArrive.shipid)
+}
+
+// -------------------------------------------------------------------
+
+// AmazonCommands
+
+// optional .UAShipRequest req_ship = 1;
+inline bool AmazonCommands::has_req_ship() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AmazonCommands::set_has_req_ship() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AmazonCommands::clear_has_req_ship() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AmazonCommands::clear_req_ship() {
+  if (req_ship_ != NULL) req_ship_->::UAShipRequest::Clear();
+  clear_has_req_ship();
+}
+inline const ::UAShipRequest& AmazonCommands::req_ship() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.req_ship)
+  return req_ship_ != NULL ? *req_ship_
+                         : *::UAShipRequest::internal_default_instance();
+}
+inline ::UAShipRequest* AmazonCommands::mutable_req_ship() {
+  set_has_req_ship();
+  if (req_ship_ == NULL) {
+    req_ship_ = new ::UAShipRequest;
+  }
+  // @@protoc_insertion_point(field_mutable:AmazonCommands.req_ship)
+  return req_ship_;
+}
+inline ::UAShipRequest* AmazonCommands::release_req_ship() {
+  // @@protoc_insertion_point(field_release:AmazonCommands.req_ship)
+  clear_has_req_ship();
+  ::UAShipRequest* temp = req_ship_;
+  req_ship_ = NULL;
+  return temp;
+}
+inline void AmazonCommands::set_allocated_req_ship(::UAShipRequest* req_ship) {
+  delete req_ship_;
+  req_ship_ = req_ship;
+  if (req_ship) {
+    set_has_req_ship();
+  } else {
+    clear_has_req_ship();
+  }
+  // @@protoc_insertion_point(field_set_allocated:AmazonCommands.req_ship)
+}
+
+// optional int32 req_deliver_truckid = 2;
+inline bool AmazonCommands::has_req_deliver_truckid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AmazonCommands::set_has_req_deliver_truckid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AmazonCommands::clear_has_req_deliver_truckid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AmazonCommands::clear_req_deliver_truckid() {
+  req_deliver_truckid_ = 0;
+  clear_has_req_deliver_truckid();
+}
+inline ::google::protobuf::int32 AmazonCommands::req_deliver_truckid() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.req_deliver_truckid)
+  return req_deliver_truckid_;
+}
+inline void AmazonCommands::set_req_deliver_truckid(::google::protobuf::int32 value) {
+  set_has_req_deliver_truckid();
+  req_deliver_truckid_ = value;
+  // @@protoc_insertion_point(field_set:AmazonCommands.req_deliver_truckid)
+}
+
+// optional bool disconnect = 3;
+inline bool AmazonCommands::has_disconnect() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AmazonCommands::set_has_disconnect() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AmazonCommands::clear_has_disconnect() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AmazonCommands::clear_disconnect() {
+  disconnect_ = false;
+  clear_has_disconnect();
+}
+inline bool AmazonCommands::disconnect() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.disconnect)
+  return disconnect_;
+}
+inline void AmazonCommands::set_disconnect(bool value) {
+  set_has_disconnect();
+  disconnect_ = value;
+  // @@protoc_insertion_point(field_set:AmazonCommands.disconnect)
+}
+
+// -------------------------------------------------------------------
+
+// UPSResponses
+
+// optional .UATruckArrive resp_truck = 1;
+inline bool UPSResponses::has_resp_truck() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UPSResponses::set_has_resp_truck() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UPSResponses::clear_has_resp_truck() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UPSResponses::clear_resp_truck() {
+  if (resp_truck_ != NULL) resp_truck_->::UATruckArrive::Clear();
+  clear_has_resp_truck();
+}
+inline const ::UATruckArrive& UPSResponses::resp_truck() const {
+  // @@protoc_insertion_point(field_get:UPSResponses.resp_truck)
+  return resp_truck_ != NULL ? *resp_truck_
+                         : *::UATruckArrive::internal_default_instance();
+}
+inline ::UATruckArrive* UPSResponses::mutable_resp_truck() {
+  set_has_resp_truck();
+  if (resp_truck_ == NULL) {
+    resp_truck_ = new ::UATruckArrive;
+  }
+  // @@protoc_insertion_point(field_mutable:UPSResponses.resp_truck)
+  return resp_truck_;
+}
+inline ::UATruckArrive* UPSResponses::release_resp_truck() {
+  // @@protoc_insertion_point(field_release:UPSResponses.resp_truck)
+  clear_has_resp_truck();
+  ::UATruckArrive* temp = resp_truck_;
+  resp_truck_ = NULL;
+  return temp;
+}
+inline void UPSResponses::set_allocated_resp_truck(::UATruckArrive* resp_truck) {
+  delete resp_truck_;
+  resp_truck_ = resp_truck;
+  if (resp_truck) {
+    set_has_resp_truck();
+  } else {
+    clear_has_resp_truck();
+  }
+  // @@protoc_insertion_point(field_set_allocated:UPSResponses.resp_truck)
+}
+
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
