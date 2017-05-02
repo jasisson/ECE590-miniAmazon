@@ -12,6 +12,8 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "ups.pb.h"
 #include "ups.pb.cc"
+#include "amazon.pb.h"
+#include "amazon.pb.cc"
 #include "db.hpp"
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
@@ -20,6 +22,7 @@
 #include <postgresql/libpq-fe.h>
 #include <sstream>
 #include <sys/wait.h>
+#include <vector>
 
 using namespace pqxx;
 
@@ -155,16 +158,32 @@ void create_ups_amazon_socket(int *ups_amazon, int *amazon_port){
   std::cout << "successfully connected to amazon\n";
 }
 
-void recv_amazon(google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream simin2){
-  
+void recv_amazon(google::protobuf::io::FileOutputStream *simout, google::protobuf::io::FileInputStream *simin, google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream *simin2){
+  AmazonCommands shipMessage;
+  recvMesgFrom(shipMessage, simin2);
+  if(shipMessage.has_ship()){
+    // need to extract truckid, whid
+    int truck_id = shipMessage.ship.package.whnum();
+    int whid = shipMessage.ship.package.things.id();
+    UCommands getTruck;
+    UGoPickup *info = getTruck.add_pickups();
+    info->set_truckid(truck_id);
+    info->set_whid(whid);
+    if(sendMesgTo(getTruck, simout)){
+      std::cout << "message from amazon received, sending truck (" << truck_id << ") to warehouse (" << whid << ")\n";
+    }
+  }
+  if(shipMessage.has_truckid()){
+    // need to extract truckid and packageid, x, and y
+  }
 }
 
-void start_ups(google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream simin2){
+void start_ups(std::vector< std::vector<int> > *orderInfo, google::protobuf::io::FileOutputStream *simout, google::protobuf::io::FileInputStream *simin, google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream *simin2){
   pid_t pid = fork();
   int status;
   pid_t w;
   if(pid == 0){// child process
-    recv_amazon(simout2, simin2);
+    recv_amazon(simout, simin, simout2, simin2);
   }
   else{// parent process
     w = waitpid(pid, &status, WUNTRACED | WCONTINUED);
@@ -175,13 +194,14 @@ int main(){
   int ups_world;
   int ups_amazon;
   int amazon_port;
-  //create_ups_world_socket(&ups_world);
-  //google::protobuf::io::FileOutputStream simout(ups_world);
-  //google::protobuf::io::FileInputStream simin(ups_world);
-  //connect_to_world(&simout, &simin);
+  std::vector< std::vector<int> > orderInfo;
+  create_ups_world_socket(&ups_world);
+  google::protobuf::io::FileOutputStream simout(ups_world);
+  google::protobuf::io::FileInputStream simin(ups_world);
+  connect_to_world(&simout, &simin);
   create_ups_amazon_socket(&ups_amazon, &amazon_port);
   google::protobuf::io::FileOutputStream simout2(amazon_port);
   google::protobuf::io::FileInputStream simin2(amazon_port);
-  start_ups(&simout2, &simin2);
+  start_ups(&orderInfo, &simout, &simin, &simout2, &simin2);
 }
 

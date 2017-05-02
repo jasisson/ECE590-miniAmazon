@@ -52,13 +52,6 @@ message AResponses {
    optional bool finished = 5;
 }
 
-message UAShipRequest {          
-  required APack package = 1;
-  required int32 x = 2;
-  required int32 y = 3;			
-  optional string upsAccount = 4;			   
-}
-
 message UATruckArrive {            
   required int32 truckid = 1;
   required int32 whnum = 2;
@@ -66,9 +59,11 @@ message UATruckArrive {
 }
 
 message AmazonCommands {
-   optional UAShipRequest req_ship = 1;
-   optional int32 req_deliver_truckid = 2;  
-   optional bool disconnect = 3;         
+   optional int32 x = 1;
+   optional int32 y = 2;
+   optional int64 id = 3;
+   optional int32 truckid = 4;  
+   optional bool disconnect = 5;         
 }
 
 message UPSResponses {
