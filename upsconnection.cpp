@@ -29,8 +29,9 @@ using namespace pqxx;
 #define UPS 12345
 #define AMAZON_PORT 23456
 #define UPS_PORT 34567
-#define WORLD_ID 1005
+#define WORLD_ID 1006
 #define SIM_SPEED 100000000
+#define WAREHOUSES 4
 
 template<typename T> bool sendMesgTo(const T & message,
 				     google::protobuf::io::FileOutputStream *out) {
@@ -158,23 +159,77 @@ void create_ups_amazon_socket(int *ups_amazon, int *amazon_port){
   std::cout << "successfully connected to amazon\n";
 }
 
-void recv_amazon(google::protobuf::io::FileOutputStream *simout, google::protobuf::io::FileInputStream *simin, google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream *simin2){
+void recv_amazon(std::vector< std::vector<int> > *orderInfo, google::protobuf::io::FileOutputStream *simout, google::protobuf::io::FileInputStream *simin, google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream *simin2){
   AmazonCommands shipMessage;
   recvMesgFrom(shipMessage, simin2);
-  if(shipMessage.has_ship()){
+  if(shipMessage.has_x()){
     // need to extract truckid, whid
-    int truck_id = shipMessage.ship.package.whnum();
-    int whid = shipMessage.ship.package.things.id();
+    int truck_id = shipMessage.truckid();
+    int whid = shipMessage.whnum();
+    std::vector<int> temp;
+    temp.push_back(shipMessage.truckid());
+    temp.push_back(shipMessage.id());
+    temp.push_back(shipMessage.x());
+    temp.push_back(shipMessage.y());
+    orderInfo->push_back(temp);
     UCommands getTruck;
     UGoPickup *info = getTruck.add_pickups();
     info->set_truckid(truck_id);
     info->set_whid(whid);
+    getTruck.set_simspeed(SIM_SPEED);
     if(sendMesgTo(getTruck, simout)){
       std::cout << "message from amazon received, sending truck (" << truck_id << ") to warehouse (" << whid << ")\n";
     }
   }
-  if(shipMessage.has_truckid()){
+  else if(!shipMessage.has_x() and shipMessage.has_truckid()){
+    std::cout << "i'm here\n";
     // need to extract truckid and packageid, x, and y
+    int truck_id = shipMessage.truckid();
+    UCommands deliver;
+    UGoDeliver *info = deliver.add_deliveries();
+    UDeliveryLocation *details = info->add_packages();
+    // iterate over vector and see which truck ID matches
+    std::vector<int> temp;
+    for(std::vector<std::vector<int> >::iterator it = orderInfo->begin(); it != orderInfo->end(); ++it){
+      if( (*it)[0] == truck_id){
+	temp = *it;
+      }
+    }
+    details->set_x(temp[2]);
+    details->set_y(temp[3]);
+    details->set_packageid(temp[1]);
+    info->set_truckid(truck_id);
+    deliver.set_simspeed(SIM_SPEED);
+    if(sendMesgTo(deliver, simout)){
+      std::cout << "sent message to world to deliver package id: " << temp[1] << " to location x: " << temp[2] << " and y: " << temp[3] << std::endl;
+    }
+  }
+}
+
+void recv_world(google::protobuf::io::FileOutputStream *simout, google::protobuf::io::FileInputStream *simin, google::protobuf::io::FileOutputStream *simout2, google::protobuf::io::FileInputStream *simin2){
+  UResponses response;
+  if(recvMesgFrom(response, simin)){
+    if(response.has_error()){
+      std::cout << "[ra]"<< response.error() << "\n";
+    }
+    else{
+      int total_delivered = response.delivered_size();
+      std::cout << "total_delivered: " << total_delivered << std::endl;
+      // UFinished completions (truckid, x, y)
+      if(total_delivered > 0){
+	for(int i = 0; i < total_delivered; i++){
+	  int truckid = response.delivered(i).truckid();
+	  int pid = response.delivered(i).packageid();
+	  UATruckArrive sendAmazon;
+	  sendAmazon.set_truckid(truckid);
+	  sendAmazon.set_shipid(pid);
+	  sendAmazon.set_whnum(pid%WAREHOUSES);
+	  if(sendMesgTo(sendAmazon, simout2)){
+	    std::cout << "sent truck (" << truckid << ") to warehouse (" << pid%WAREHOUSES << ") for package (" << pid << ")\n";
+	  }
+	}
+      }
+    }
   }
 }
 
@@ -183,9 +238,16 @@ void start_ups(std::vector< std::vector<int> > *orderInfo, google::protobuf::io:
   int status;
   pid_t w;
   if(pid == 0){// child process
-    recv_amazon(simout, simin, simout2, simin2);
+    while(1){
+      usleep(1000000);
+      recv_amazon(orderInfo, simout, simin, simout2, simin2);
+    }
   }
   else{// parent process
+    while(1){
+      usleep(1000000);
+      recv_world(simout, simin, simout2, simin2);
+    }
     w = waitpid(pid, &status, WUNTRACED | WCONTINUED);
   }
 }

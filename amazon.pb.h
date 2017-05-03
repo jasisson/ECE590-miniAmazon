@@ -59,6 +59,15 @@ extern AResponsesDefaultTypeInternal _AResponses_default_instance_;
 class AmazonCommands;
 class AmazonCommandsDefaultTypeInternal;
 extern AmazonCommandsDefaultTypeInternal _AmazonCommands_default_instance_;
+class UAPack;
+class UAPackDefaultTypeInternal;
+extern UAPackDefaultTypeInternal _UAPack_default_instance_;
+class UAProduct;
+class UAProductDefaultTypeInternal;
+extern UAProductDefaultTypeInternal _UAProduct_default_instance_;
+class UAShipRequest;
+class UAShipRequestDefaultTypeInternal;
+extern UAShipRequestDefaultTypeInternal _UAShipRequest_default_instance_;
 class UATruckArrive;
 class UATruckArriveDefaultTypeInternal;
 extern UATruckArriveDefaultTypeInternal _UATruckArrive_default_instance_;
@@ -1167,6 +1176,391 @@ class AResponses : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
+class UAProduct : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UAProduct) */ {
+ public:
+  UAProduct();
+  virtual ~UAProduct();
+
+  UAProduct(const UAProduct& from);
+
+  inline UAProduct& operator=(const UAProduct& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UAProduct& default_instance();
+
+  static inline const UAProduct* internal_default_instance() {
+    return reinterpret_cast<const UAProduct*>(
+               &_UAProduct_default_instance_);
+  }
+
+  void Swap(UAProduct* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UAProduct* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UAProduct* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UAProduct& from);
+  void MergeFrom(const UAProduct& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UAProduct* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string description = 2;
+  bool has_description() const;
+  void clear_description();
+  static const int kDescriptionFieldNumber = 2;
+  const ::std::string& description() const;
+  void set_description(const ::std::string& value);
+  #if LANG_CXX11
+  void set_description(::std::string&& value);
+  #endif
+  void set_description(const char* value);
+  void set_description(const char* value, size_t size);
+  ::std::string* mutable_description();
+  ::std::string* release_description();
+  void set_allocated_description(::std::string* description);
+
+  // required int64 id = 1;
+  bool has_id() const;
+  void clear_id();
+  static const int kIdFieldNumber = 1;
+  ::google::protobuf::int64 id() const;
+  void set_id(::google::protobuf::int64 value);
+
+  // required int32 count = 3;
+  bool has_count() const;
+  void clear_count();
+  static const int kCountFieldNumber = 3;
+  ::google::protobuf::int32 count() const;
+  void set_count(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:UAProduct)
+ private:
+  void set_has_id();
+  void clear_has_id();
+  void set_has_description();
+  void clear_has_description();
+  void set_has_count();
+  void clear_has_count();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr description_;
+  ::google::protobuf::int64 id_;
+  ::google::protobuf::int32 count_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class UAPack : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UAPack) */ {
+ public:
+  UAPack();
+  virtual ~UAPack();
+
+  UAPack(const UAPack& from);
+
+  inline UAPack& operator=(const UAPack& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UAPack& default_instance();
+
+  static inline const UAPack* internal_default_instance() {
+    return reinterpret_cast<const UAPack*>(
+               &_UAPack_default_instance_);
+  }
+
+  void Swap(UAPack* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UAPack* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UAPack* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UAPack& from);
+  void MergeFrom(const UAPack& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UAPack* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated .UAProduct things = 2;
+  int things_size() const;
+  void clear_things();
+  static const int kThingsFieldNumber = 2;
+  const ::UAProduct& things(int index) const;
+  ::UAProduct* mutable_things(int index);
+  ::UAProduct* add_things();
+  ::google::protobuf::RepeatedPtrField< ::UAProduct >*
+      mutable_things();
+  const ::google::protobuf::RepeatedPtrField< ::UAProduct >&
+      things() const;
+
+  // required int64 shipid = 3;
+  bool has_shipid() const;
+  void clear_shipid();
+  static const int kShipidFieldNumber = 3;
+  ::google::protobuf::int64 shipid() const;
+  void set_shipid(::google::protobuf::int64 value);
+
+  // required int32 whnum = 1;
+  bool has_whnum() const;
+  void clear_whnum();
+  static const int kWhnumFieldNumber = 1;
+  ::google::protobuf::int32 whnum() const;
+  void set_whnum(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:UAPack)
+ private:
+  void set_has_whnum();
+  void clear_has_whnum();
+  void set_has_shipid();
+  void clear_has_shipid();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::UAProduct > things_;
+  ::google::protobuf::int64 shipid_;
+  ::google::protobuf::int32 whnum_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class UAShipRequest : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UAShipRequest) */ {
+ public:
+  UAShipRequest();
+  virtual ~UAShipRequest();
+
+  UAShipRequest(const UAShipRequest& from);
+
+  inline UAShipRequest& operator=(const UAShipRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const UAShipRequest& default_instance();
+
+  static inline const UAShipRequest* internal_default_instance() {
+    return reinterpret_cast<const UAShipRequest*>(
+               &_UAShipRequest_default_instance_);
+  }
+
+  void Swap(UAShipRequest* other);
+
+  // implements Message ----------------------------------------------
+
+  inline UAShipRequest* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  UAShipRequest* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const UAShipRequest& from);
+  void MergeFrom(const UAShipRequest& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(UAShipRequest* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string upsAccount = 4;
+  bool has_upsaccount() const;
+  void clear_upsaccount();
+  static const int kUpsAccountFieldNumber = 4;
+  const ::std::string& upsaccount() const;
+  void set_upsaccount(const ::std::string& value);
+  #if LANG_CXX11
+  void set_upsaccount(::std::string&& value);
+  #endif
+  void set_upsaccount(const char* value);
+  void set_upsaccount(const char* value, size_t size);
+  ::std::string* mutable_upsaccount();
+  ::std::string* release_upsaccount();
+  void set_allocated_upsaccount(::std::string* upsaccount);
+
+  // required .UAPack package = 1;
+  bool has_package() const;
+  void clear_package();
+  static const int kPackageFieldNumber = 1;
+  const ::UAPack& package() const;
+  ::UAPack* mutable_package();
+  ::UAPack* release_package();
+  void set_allocated_package(::UAPack* package);
+
+  // required int32 x = 2;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 2;
+  ::google::protobuf::int32 x() const;
+  void set_x(::google::protobuf::int32 value);
+
+  // required int32 y = 3;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 3;
+  ::google::protobuf::int32 y() const;
+  void set_y(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:UAShipRequest)
+ private:
+  void set_has_package();
+  void clear_has_package();
+  void set_has_x();
+  void clear_has_x();
+  void set_has_y();
+  void clear_has_y();
+  void set_has_upsaccount();
+  void clear_has_upsaccount();
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr upsaccount_;
+  ::UAPack* package_;
+  ::google::protobuf::int32 x_;
+  ::google::protobuf::int32 y_;
+  friend struct protobuf_amazon_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class UATruckArrive : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:UATruckArrive) */ {
  public:
   UATruckArrive();
@@ -1360,71 +1754,43 @@ class AmazonCommands : public ::google::protobuf::Message /* @@protoc_insertion_
 
   // accessors -------------------------------------------------------
 
-  // optional int32 x = 1;
-  bool has_x() const;
-  void clear_x();
-  static const int kXFieldNumber = 1;
-  ::google::protobuf::int32 x() const;
-  void set_x(::google::protobuf::int32 value);
+  // optional .UAShipRequest req_ship = 1;
+  bool has_req_ship() const;
+  void clear_req_ship();
+  static const int kReqShipFieldNumber = 1;
+  const ::UAShipRequest& req_ship() const;
+  ::UAShipRequest* mutable_req_ship();
+  ::UAShipRequest* release_req_ship();
+  void set_allocated_req_ship(::UAShipRequest* req_ship);
 
-  // optional int32 y = 2;
-  bool has_y() const;
-  void clear_y();
-  static const int kYFieldNumber = 2;
-  ::google::protobuf::int32 y() const;
-  void set_y(::google::protobuf::int32 value);
+  // optional int32 req_deliver_truckid = 2;
+  bool has_req_deliver_truckid() const;
+  void clear_req_deliver_truckid();
+  static const int kReqDeliverTruckidFieldNumber = 2;
+  ::google::protobuf::int32 req_deliver_truckid() const;
+  void set_req_deliver_truckid(::google::protobuf::int32 value);
 
-  // optional int64 id = 3;
-  bool has_id() const;
-  void clear_id();
-  static const int kIdFieldNumber = 3;
-  ::google::protobuf::int64 id() const;
-  void set_id(::google::protobuf::int64 value);
-
-  // optional int32 whnum = 4;
-  bool has_whnum() const;
-  void clear_whnum();
-  static const int kWhnumFieldNumber = 4;
-  ::google::protobuf::int32 whnum() const;
-  void set_whnum(::google::protobuf::int32 value);
-
-  // optional int32 truckid = 5;
-  bool has_truckid() const;
-  void clear_truckid();
-  static const int kTruckidFieldNumber = 5;
-  ::google::protobuf::int32 truckid() const;
-  void set_truckid(::google::protobuf::int32 value);
-
-  // optional bool disconnect = 6;
+  // optional bool disconnect = 3;
   bool has_disconnect() const;
   void clear_disconnect();
-  static const int kDisconnectFieldNumber = 6;
+  static const int kDisconnectFieldNumber = 3;
   bool disconnect() const;
   void set_disconnect(bool value);
 
   // @@protoc_insertion_point(class_scope:AmazonCommands)
  private:
-  void set_has_x();
-  void clear_has_x();
-  void set_has_y();
-  void clear_has_y();
-  void set_has_id();
-  void clear_has_id();
-  void set_has_whnum();
-  void clear_has_whnum();
-  void set_has_truckid();
-  void clear_has_truckid();
+  void set_has_req_ship();
+  void clear_has_req_ship();
+  void set_has_req_deliver_truckid();
+  void clear_has_req_deliver_truckid();
   void set_has_disconnect();
   void clear_has_disconnect();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::HasBits<1> _has_bits_;
   mutable int _cached_size_;
-  ::google::protobuf::int32 x_;
-  ::google::protobuf::int32 y_;
-  ::google::protobuf::int64 id_;
-  ::google::protobuf::int32 whnum_;
-  ::google::protobuf::int32 truckid_;
+  ::UAShipRequest* req_ship_;
+  ::google::protobuf::int32 req_deliver_truckid_;
   bool disconnect_;
   friend struct protobuf_amazon_2eproto::TableStruct;
 };
@@ -2359,6 +2725,361 @@ inline void AResponses::set_finished(bool value) {
 
 // -------------------------------------------------------------------
 
+// UAProduct
+
+// required int64 id = 1;
+inline bool UAProduct::has_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UAProduct::set_has_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UAProduct::clear_has_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UAProduct::clear_id() {
+  id_ = GOOGLE_LONGLONG(0);
+  clear_has_id();
+}
+inline ::google::protobuf::int64 UAProduct::id() const {
+  // @@protoc_insertion_point(field_get:UAProduct.id)
+  return id_;
+}
+inline void UAProduct::set_id(::google::protobuf::int64 value) {
+  set_has_id();
+  id_ = value;
+  // @@protoc_insertion_point(field_set:UAProduct.id)
+}
+
+// required string description = 2;
+inline bool UAProduct::has_description() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UAProduct::set_has_description() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UAProduct::clear_has_description() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UAProduct::clear_description() {
+  description_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_description();
+}
+inline const ::std::string& UAProduct::description() const {
+  // @@protoc_insertion_point(field_get:UAProduct.description)
+  return description_.GetNoArena();
+}
+inline void UAProduct::set_description(const ::std::string& value) {
+  set_has_description();
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:UAProduct.description)
+}
+#if LANG_CXX11
+inline void UAProduct::set_description(::std::string&& value) {
+  set_has_description();
+  description_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:UAProduct.description)
+}
+#endif
+inline void UAProduct::set_description(const char* value) {
+  set_has_description();
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:UAProduct.description)
+}
+inline void UAProduct::set_description(const char* value, size_t size) {
+  set_has_description();
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:UAProduct.description)
+}
+inline ::std::string* UAProduct::mutable_description() {
+  set_has_description();
+  // @@protoc_insertion_point(field_mutable:UAProduct.description)
+  return description_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UAProduct::release_description() {
+  // @@protoc_insertion_point(field_release:UAProduct.description)
+  clear_has_description();
+  return description_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UAProduct::set_allocated_description(::std::string* description) {
+  if (description != NULL) {
+    set_has_description();
+  } else {
+    clear_has_description();
+  }
+  description_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), description);
+  // @@protoc_insertion_point(field_set_allocated:UAProduct.description)
+}
+
+// required int32 count = 3;
+inline bool UAProduct::has_count() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UAProduct::set_has_count() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UAProduct::clear_has_count() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UAProduct::clear_count() {
+  count_ = 0;
+  clear_has_count();
+}
+inline ::google::protobuf::int32 UAProduct::count() const {
+  // @@protoc_insertion_point(field_get:UAProduct.count)
+  return count_;
+}
+inline void UAProduct::set_count(::google::protobuf::int32 value) {
+  set_has_count();
+  count_ = value;
+  // @@protoc_insertion_point(field_set:UAProduct.count)
+}
+
+// -------------------------------------------------------------------
+
+// UAPack
+
+// required int32 whnum = 1;
+inline bool UAPack::has_whnum() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UAPack::set_has_whnum() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UAPack::clear_has_whnum() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UAPack::clear_whnum() {
+  whnum_ = 0;
+  clear_has_whnum();
+}
+inline ::google::protobuf::int32 UAPack::whnum() const {
+  // @@protoc_insertion_point(field_get:UAPack.whnum)
+  return whnum_;
+}
+inline void UAPack::set_whnum(::google::protobuf::int32 value) {
+  set_has_whnum();
+  whnum_ = value;
+  // @@protoc_insertion_point(field_set:UAPack.whnum)
+}
+
+// repeated .UAProduct things = 2;
+inline int UAPack::things_size() const {
+  return things_.size();
+}
+inline void UAPack::clear_things() {
+  things_.Clear();
+}
+inline const ::UAProduct& UAPack::things(int index) const {
+  // @@protoc_insertion_point(field_get:UAPack.things)
+  return things_.Get(index);
+}
+inline ::UAProduct* UAPack::mutable_things(int index) {
+  // @@protoc_insertion_point(field_mutable:UAPack.things)
+  return things_.Mutable(index);
+}
+inline ::UAProduct* UAPack::add_things() {
+  // @@protoc_insertion_point(field_add:UAPack.things)
+  return things_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::UAProduct >*
+UAPack::mutable_things() {
+  // @@protoc_insertion_point(field_mutable_list:UAPack.things)
+  return &things_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::UAProduct >&
+UAPack::things() const {
+  // @@protoc_insertion_point(field_list:UAPack.things)
+  return things_;
+}
+
+// required int64 shipid = 3;
+inline bool UAPack::has_shipid() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UAPack::set_has_shipid() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UAPack::clear_has_shipid() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UAPack::clear_shipid() {
+  shipid_ = GOOGLE_LONGLONG(0);
+  clear_has_shipid();
+}
+inline ::google::protobuf::int64 UAPack::shipid() const {
+  // @@protoc_insertion_point(field_get:UAPack.shipid)
+  return shipid_;
+}
+inline void UAPack::set_shipid(::google::protobuf::int64 value) {
+  set_has_shipid();
+  shipid_ = value;
+  // @@protoc_insertion_point(field_set:UAPack.shipid)
+}
+
+// -------------------------------------------------------------------
+
+// UAShipRequest
+
+// required .UAPack package = 1;
+inline bool UAShipRequest::has_package() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UAShipRequest::set_has_package() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UAShipRequest::clear_has_package() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UAShipRequest::clear_package() {
+  if (package_ != NULL) package_->::UAPack::Clear();
+  clear_has_package();
+}
+inline const ::UAPack& UAShipRequest::package() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.package)
+  return package_ != NULL ? *package_
+                         : *::UAPack::internal_default_instance();
+}
+inline ::UAPack* UAShipRequest::mutable_package() {
+  set_has_package();
+  if (package_ == NULL) {
+    package_ = new ::UAPack;
+  }
+  // @@protoc_insertion_point(field_mutable:UAShipRequest.package)
+  return package_;
+}
+inline ::UAPack* UAShipRequest::release_package() {
+  // @@protoc_insertion_point(field_release:UAShipRequest.package)
+  clear_has_package();
+  ::UAPack* temp = package_;
+  package_ = NULL;
+  return temp;
+}
+inline void UAShipRequest::set_allocated_package(::UAPack* package) {
+  delete package_;
+  package_ = package;
+  if (package) {
+    set_has_package();
+  } else {
+    clear_has_package();
+  }
+  // @@protoc_insertion_point(field_set_allocated:UAShipRequest.package)
+}
+
+// required int32 x = 2;
+inline bool UAShipRequest::has_x() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UAShipRequest::set_has_x() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UAShipRequest::clear_has_x() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UAShipRequest::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline ::google::protobuf::int32 UAShipRequest::x() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.x)
+  return x_;
+}
+inline void UAShipRequest::set_x(::google::protobuf::int32 value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:UAShipRequest.x)
+}
+
+// required int32 y = 3;
+inline bool UAShipRequest::has_y() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void UAShipRequest::set_has_y() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void UAShipRequest::clear_has_y() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void UAShipRequest::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline ::google::protobuf::int32 UAShipRequest::y() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.y)
+  return y_;
+}
+inline void UAShipRequest::set_y(::google::protobuf::int32 value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:UAShipRequest.y)
+}
+
+// optional string upsAccount = 4;
+inline bool UAShipRequest::has_upsaccount() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UAShipRequest::set_has_upsaccount() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UAShipRequest::clear_has_upsaccount() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UAShipRequest::clear_upsaccount() {
+  upsaccount_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_upsaccount();
+}
+inline const ::std::string& UAShipRequest::upsaccount() const {
+  // @@protoc_insertion_point(field_get:UAShipRequest.upsAccount)
+  return upsaccount_.GetNoArena();
+}
+inline void UAShipRequest::set_upsaccount(const ::std::string& value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:UAShipRequest.upsAccount)
+}
+#if LANG_CXX11
+inline void UAShipRequest::set_upsaccount(::std::string&& value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:UAShipRequest.upsAccount)
+}
+#endif
+inline void UAShipRequest::set_upsaccount(const char* value) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:UAShipRequest.upsAccount)
+}
+inline void UAShipRequest::set_upsaccount(const char* value, size_t size) {
+  set_has_upsaccount();
+  upsaccount_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:UAShipRequest.upsAccount)
+}
+inline ::std::string* UAShipRequest::mutable_upsaccount() {
+  set_has_upsaccount();
+  // @@protoc_insertion_point(field_mutable:UAShipRequest.upsAccount)
+  return upsaccount_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* UAShipRequest::release_upsaccount() {
+  // @@protoc_insertion_point(field_release:UAShipRequest.upsAccount)
+  clear_has_upsaccount();
+  return upsaccount_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void UAShipRequest::set_allocated_upsaccount(::std::string* upsaccount) {
+  if (upsaccount != NULL) {
+    set_has_upsaccount();
+  } else {
+    clear_has_upsaccount();
+  }
+  upsaccount_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), upsaccount);
+  // @@protoc_insertion_point(field_set_allocated:UAShipRequest.upsAccount)
+}
+
+// -------------------------------------------------------------------
+
 // UATruckArrive
 
 // required int32 truckid = 1;
@@ -2437,135 +3158,84 @@ inline void UATruckArrive::set_shipid(::google::protobuf::int64 value) {
 
 // AmazonCommands
 
-// optional int32 x = 1;
-inline bool AmazonCommands::has_x() const {
+// optional .UAShipRequest req_ship = 1;
+inline bool AmazonCommands::has_req_ship() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void AmazonCommands::set_has_x() {
+inline void AmazonCommands::set_has_req_ship() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void AmazonCommands::clear_has_x() {
+inline void AmazonCommands::clear_has_req_ship() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void AmazonCommands::clear_x() {
-  x_ = 0;
-  clear_has_x();
+inline void AmazonCommands::clear_req_ship() {
+  if (req_ship_ != NULL) req_ship_->::UAShipRequest::Clear();
+  clear_has_req_ship();
 }
-inline ::google::protobuf::int32 AmazonCommands::x() const {
-  // @@protoc_insertion_point(field_get:AmazonCommands.x)
-  return x_;
+inline const ::UAShipRequest& AmazonCommands::req_ship() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.req_ship)
+  return req_ship_ != NULL ? *req_ship_
+                         : *::UAShipRequest::internal_default_instance();
 }
-inline void AmazonCommands::set_x(::google::protobuf::int32 value) {
-  set_has_x();
-  x_ = value;
-  // @@protoc_insertion_point(field_set:AmazonCommands.x)
+inline ::UAShipRequest* AmazonCommands::mutable_req_ship() {
+  set_has_req_ship();
+  if (req_ship_ == NULL) {
+    req_ship_ = new ::UAShipRequest;
+  }
+  // @@protoc_insertion_point(field_mutable:AmazonCommands.req_ship)
+  return req_ship_;
+}
+inline ::UAShipRequest* AmazonCommands::release_req_ship() {
+  // @@protoc_insertion_point(field_release:AmazonCommands.req_ship)
+  clear_has_req_ship();
+  ::UAShipRequest* temp = req_ship_;
+  req_ship_ = NULL;
+  return temp;
+}
+inline void AmazonCommands::set_allocated_req_ship(::UAShipRequest* req_ship) {
+  delete req_ship_;
+  req_ship_ = req_ship;
+  if (req_ship) {
+    set_has_req_ship();
+  } else {
+    clear_has_req_ship();
+  }
+  // @@protoc_insertion_point(field_set_allocated:AmazonCommands.req_ship)
 }
 
-// optional int32 y = 2;
-inline bool AmazonCommands::has_y() const {
+// optional int32 req_deliver_truckid = 2;
+inline bool AmazonCommands::has_req_deliver_truckid() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void AmazonCommands::set_has_y() {
+inline void AmazonCommands::set_has_req_deliver_truckid() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void AmazonCommands::clear_has_y() {
+inline void AmazonCommands::clear_has_req_deliver_truckid() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void AmazonCommands::clear_y() {
-  y_ = 0;
-  clear_has_y();
+inline void AmazonCommands::clear_req_deliver_truckid() {
+  req_deliver_truckid_ = 0;
+  clear_has_req_deliver_truckid();
 }
-inline ::google::protobuf::int32 AmazonCommands::y() const {
-  // @@protoc_insertion_point(field_get:AmazonCommands.y)
-  return y_;
+inline ::google::protobuf::int32 AmazonCommands::req_deliver_truckid() const {
+  // @@protoc_insertion_point(field_get:AmazonCommands.req_deliver_truckid)
+  return req_deliver_truckid_;
 }
-inline void AmazonCommands::set_y(::google::protobuf::int32 value) {
-  set_has_y();
-  y_ = value;
-  // @@protoc_insertion_point(field_set:AmazonCommands.y)
+inline void AmazonCommands::set_req_deliver_truckid(::google::protobuf::int32 value) {
+  set_has_req_deliver_truckid();
+  req_deliver_truckid_ = value;
+  // @@protoc_insertion_point(field_set:AmazonCommands.req_deliver_truckid)
 }
 
-// optional int64 id = 3;
-inline bool AmazonCommands::has_id() const {
+// optional bool disconnect = 3;
+inline bool AmazonCommands::has_disconnect() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void AmazonCommands::set_has_id() {
+inline void AmazonCommands::set_has_disconnect() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void AmazonCommands::clear_has_id() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AmazonCommands::clear_id() {
-  id_ = GOOGLE_LONGLONG(0);
-  clear_has_id();
-}
-inline ::google::protobuf::int64 AmazonCommands::id() const {
-  // @@protoc_insertion_point(field_get:AmazonCommands.id)
-  return id_;
-}
-inline void AmazonCommands::set_id(::google::protobuf::int64 value) {
-  set_has_id();
-  id_ = value;
-  // @@protoc_insertion_point(field_set:AmazonCommands.id)
-}
-
-// optional int32 whnum = 4;
-inline bool AmazonCommands::has_whnum() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AmazonCommands::set_has_whnum() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AmazonCommands::clear_has_whnum() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AmazonCommands::clear_whnum() {
-  whnum_ = 0;
-  clear_has_whnum();
-}
-inline ::google::protobuf::int32 AmazonCommands::whnum() const {
-  // @@protoc_insertion_point(field_get:AmazonCommands.whnum)
-  return whnum_;
-}
-inline void AmazonCommands::set_whnum(::google::protobuf::int32 value) {
-  set_has_whnum();
-  whnum_ = value;
-  // @@protoc_insertion_point(field_set:AmazonCommands.whnum)
-}
-
-// optional int32 truckid = 5;
-inline bool AmazonCommands::has_truckid() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AmazonCommands::set_has_truckid() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AmazonCommands::clear_has_truckid() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AmazonCommands::clear_truckid() {
-  truckid_ = 0;
-  clear_has_truckid();
-}
-inline ::google::protobuf::int32 AmazonCommands::truckid() const {
-  // @@protoc_insertion_point(field_get:AmazonCommands.truckid)
-  return truckid_;
-}
-inline void AmazonCommands::set_truckid(::google::protobuf::int32 value) {
-  set_has_truckid();
-  truckid_ = value;
-  // @@protoc_insertion_point(field_set:AmazonCommands.truckid)
-}
-
-// optional bool disconnect = 6;
-inline bool AmazonCommands::has_disconnect() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AmazonCommands::set_has_disconnect() {
-  _has_bits_[0] |= 0x00000020u;
-}
 inline void AmazonCommands::clear_has_disconnect() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void AmazonCommands::clear_disconnect() {
   disconnect_ = false;
@@ -2631,6 +3301,12 @@ inline void UPSResponses::set_allocated_resp_truck(::UATruckArrive* resp_truck) 
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -25,12 +25,10 @@ using namespace pqxx;
 
 #define AMAZON_PORT 23456
 #define UPS_PORT 34567
-#define WORLD_ID 1005
+#define WORLD_ID 1006
 #define SIM_SPEED 100000000
+#define TRUCKS 4
 
-// global socket variables
-int ups_socket;
-int64_t productID = -1;
 int insertDB = 1;
 
 //this is adpated from code that a google engineer posted online
@@ -161,7 +159,7 @@ void connect_to_world(google::protobuf::io::FileOutputStream * simout, google::p
   }
 }
 
-void buy_request(int pid, int whnum, int q, string desc, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){
+void buy_request(int x, int y, int pid, int whnum, int q, string desc, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2){
   ACommands buyCommand;
   APurchaseMore *itemDes = buyCommand.add_buy();
   AProduct *product = itemDes->add_things();
@@ -178,9 +176,26 @@ void buy_request(int pid, int whnum, int q, string desc, google::protobuf::io::F
   if(sendMesgTo(buyCommand, simout)){
     std::cout << "new buy request sent to world for product (" << desc << ")\n"; 
   }
+
+  // send message to UPS to start moving truck to that location
+  AmazonCommands buyUPS;
+  UAShipRequest *UA = buyUPS.add_req_ship();
+  UAPack *Pack = UA->add_package();
+  UAProduct *product = Pack->add_things();
+  product->set_id(pid);
+  product->set_description(desc);
+  product->set_count(q);
+  Pack->set_whnum(whnum);
+  Pack->set_shipid(pid);
+  UA->set_x(x);
+  UA->set_y(y);
+  UA->set_req_deliver_truckid(pid%TRUCKS);
+  if(sendMesgTo(buyUPS, simout2)){
+    std::cout << "let UPS know of pid (" << pid << ") which is (" << desc << ")\n";
+  }
 }
 
-void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){
+void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
   AResponses response;
   if(recvMesgFrom(response, simin)){
     if(response.has_error()){
@@ -234,37 +249,40 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
       //std::cout << "total ready: " << total_ready << std::endl;
       if(total_ready > 0){
 	for(int k = 0; k < total_ready; k++){
-	  int shipid = response.ready(k);
-	  /*UPSResponses truck;
-	  if(recvMesgFrom(truck, simin2)){
-	    std::cout << "received message from UPS that truck " << truck.resp_truck.truckid() << " has arrived\n";
+	  UPSResponses UPSres;
+	  if(recvMesgFrom(UPSres, simin2)){
+	    std::cout << "received message from UPS that truck " << UPSres.resp_truck.truckid() << " has arrived\n";
 	  }
-	  int truckid = truck.resp_truck.truckid();
-	  int whnum = truck.resp_truck.whnum();
-	  int shipid = truck.resp_truck.shipid();
-	  */
+	  int truckid = UPSres.resp_truck.truckid();
+	  int whnum = UPSres.resp_truck.whnum();
+	  int shipid = UPSres.resp_truck.shipid();
 	  ACommands loadThese;
 	  APutOnTruck *package = loadThese.add_load();
-	  package->set_truckid(0); //get actual truck_id
-	  package->set_whnum(shipid);
+	  package->set_truckid(truckid); //get actual truck_id
+	  package->set_whnum(whnum);
 	  package->set_shipid(shipid);
 	  if(sendMesgTo(loadThese, simout)){
 	    std::cout << "sent message to world to load item with order number: " << shipid << std::endl;
 	  }
 	}
       }
-      /*int total_loaded = response.loaded_size();
+      int total_loaded = response.loaded_size();
       //std::cout << "total loaded: " << total_loaded << std::endl;
       if(total_loaded > 0){
 	for(int l = 0; l < total_loaded; l++){
 	  int number = response.loaded(l);
+	  // send message to UPS that we are done
+	  int truck_id = number % TRUCKS;
+	  AmazonCommands deliver;
+	  deliver.set_truckid(truck_id);
+	  if(sendMesgTo(deliver, simout2)){
+	    std::cout << "package (" << number << ") has been shipped by UPS" << std::endl;
+	  }
 	  std::stringstream status;
 	  status << "UPDATE orders SET status = 2 WHERE order_no = " << number << """";
-	  PQexec(dbconn, status.str().c_str());
-	  // send UPS msg that we are ready to deliver
+	  PQexec(dbconn, status.str().c_str()); 
 	}
       }
-      */
     }
   }
 }
@@ -280,7 +298,7 @@ void initialize_database(PGconn *dbconn){
   }
 }
 
-void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin){
+void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2, google::protobuf::io::FileInputStream * simin2){
   pid_t pid = fork();
   int status;
   pid_t w;
@@ -300,9 +318,11 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
 	  int whnum = atoi(PQgetvalue(query, i, 1));
 	  int q = atoi(PQgetvalue(query, i, 2));
 	  string desc = PQgetvalue(query, i, 3);
+	  int x = atoi(PQgetvalue(query, i, 6));
+	  int y = atoi(PQgetvalue(query, i, 7));
 	  int addx = atoi(PQgetvalue(query, i, 6));
 	  int addy = atoi(PQgetvalue(query, i, 7));
-	  buy_request(pid, whnum, q, desc, simout, simin);
+	  buy_request(x, y, pid, whnum, q, desc, simout, simin, simout2);
 	  int order_no = atoi(PQgetvalue(query, i, 10));
 	  std::stringstream update;
 	  update << "UPDATE orders SET status = 1 WHERE order_no = " << order_no << """";
@@ -320,7 +340,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
   }
   else if(pid > 0){ // parent
     while(1){
-      receive_response(dbconn, simout, simin);
+      receive_response(dbconn, simout, simin, simout2, simin2);
     }
     w = waitpid(pid, &status, WUNTRACED | WCONTINUED);
   }
@@ -333,13 +353,13 @@ int main(){
   int amazon_socket;
   int ups_socket;
   create_amazon_world_socket(&amazon_socket);
-  //create_amazon_ups_socket(&ups_socket);
+  create_amazon_ups_socket(&ups_socket);
   google::protobuf::io::FileOutputStream simout(amazon_socket);
   google::protobuf::io::FileInputStream simin(amazon_socket);
-  //google::protobuf::io::FileOutputStream simout2(ups_socket);
-  //google::protobuf::io::FileInputStream simin2(ups_socket);
+  google::protobuf::io::FileOutputStream simout2(ups_socket);
+  google::protobuf::io::FileInputStream simin2(ups_socket);
   connect_to_world(&simout, &simin);
-  //create_amazon_ups_socket(&ups_socket);
+  create_amazon_ups_socket(&ups_socket);
   
   PGconn *dbconn;
   dbconn = PQconnectdb("dbname=localdb user=postgres password=passw0rd");
@@ -347,6 +367,6 @@ int main(){
     perror("unable to connect to db");
   }
   initialize_database(dbconn);
-  start_amazon(dbconn, &simout, &simin);
+  start_amazon(dbconn, &simout, &simin, &simout2, &simin2);
   return 0;
 }
