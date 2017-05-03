@@ -1,0 +1,23 @@
+<h1>{{ "Order(s)" }}</h1>
+
+{% for o in o_list %}
+
+<form method action="{% url 'polls:orders' user_id %}">
+  <div>
+    <p> {{o.cat_desc}} </p>
+    <p> {{o.cat_pid}} </p>
+    </div>
+  <div style="float:left";>
+    <input type = "text" name = "addrX" />
+    <input type = "text" name = "addrY" />
+    </div>
+    <input type = "submit" value = "Buy" />
+</form>
+
+{% endfor %}
+
+<form action="{% url 'polls:catalog' %}" method="get">
+  {% csrf_token %}
+  <input type="submit" value="Back" />
+</form>
+</div>

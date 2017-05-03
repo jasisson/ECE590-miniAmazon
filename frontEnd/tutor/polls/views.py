@@ -24,16 +24,28 @@ class ResultsView(generic.DetailView):
 
 def catView(request, user_id): #add userID for nicety?
         if request.method == "GET":
-                p_list = Catalog.objects.all();
+                c_list = Catalog.objects.all();
                 return render (request, 'polls/catalog.html', {
-                        'p_list':p_list,
+                        'c_list':c_list,
                         'user_id': user_id,
                 })
         else:
                 return render (request, 'polls/catalog.html', {
-                        'p_list':p_list,
+                        'c_list':c_list,
                 })
 
+def orderView(request, user_id): #add userID for nicety?
+        if request.method == "GET":
+                o_list = Orders.objects.all();
+                return render (request, 'polls/orders.html', {
+                        'o_list':o_list,
+                        'user_id': user_id,
+                })
+        else:
+                return render (request, 'polls/orders.html', {
+                        'o_list':o_list,
+                })
+        
 def LoginView(request):
     return render(request, 'polls/login.html')
 

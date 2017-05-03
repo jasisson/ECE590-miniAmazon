@@ -1,12 +1,29 @@
 <h1>{{ "Catalog" }}</h1>
 
-{% for p in p_list %}
+{% for c in c_list %}
 
-<form action="{% url 'polls:catalog' user_id %}">
-  <p> {{p.desc}} </p> <br/>
-  <p> {{p.pid}} </p> <br/>
-  <input type = "text" name = "" />
-  <input type = "submit" value = "Buy" />
+<form method action="{% url 'polls:catalog' user_id %}">
+  <div>
+    <p> {{c.cat_desc}} </p>
+    <p> {{c.cat_pid}} </p>
+    </div>
+  <div style="float:left";>
+    <input type = "text" name = "addrX" />
+    <input type = "text" name = "addrY" />
+    </div>
+    <input type = "submit" value = "Buy" />
 </form>
 
 {% endfor %}
+
+
+<div style="float:left";>
+  <form action="{% url 'polls:orders' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Orders" />
+  </form>
+  <form action="{% url 'polls:login' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Logout" />
+  </form>
+</div>

@@ -27,6 +27,7 @@ def catView(request, user_id): #add userID for nicety?
                 p_list = Catalog.objects.all();
                 return render (request, 'polls/catalog.html', {
                         'p_list':p_list,
+                        'user_id': user_id,
                 })
         else:
                 return render (request, 'polls/catalog.html', {
