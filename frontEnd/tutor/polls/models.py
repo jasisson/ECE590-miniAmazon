@@ -1,0 +1,48 @@
+from django.db import models
+
+class Catalog(models.Model):
+    cat_desc = models.CharField(max_length=100)
+    cat_pid = models.IntegerField(default=0)
+    cat_type = models.CharField(max_length=100)
+    def __str__(self):
+        return self.cat_desc
+
+class Orders(models.Model):
+    order_usrID = models.CharField(max_length=25) #Foreign key?
+    order_desc = models.CharField(max_length=100)
+    order_pid = models.IntegerField(default=0)
+    order_wid = models.IntegerField(default=0)
+    order_quant = models.IntegerField(default=0)
+    order_status = models.IntegerField(default=0)
+    order_adrX = models.IntegerField(default=0)
+    order_adrY = models.IntegerField(default=0)
+    order_upsID = models.IntegerField(default=0)
+    def __str__(self):
+        return self.order_desc
+
+class User(models.Model):
+    #u_type = models.IntegerField(default=1)
+    u_email = models.CharField(max_length=200, default='null')
+    u_name = models.CharField(max_length=200)
+    def __str__(self):
+        return self.u_name
+
+class Event(models.Model):
+    e_name = models.CharField(max_length=200)
+    e_time = models.DateTimeField('event')
+    e_date = models.CharField(max_length=200, default='Unknown')
+    def __str__(self):
+        return self.e_name
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+    def __str__(self):
+                return self.question_text
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+    def __str__(self):
+            return self.choice_text

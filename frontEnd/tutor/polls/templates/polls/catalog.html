@@ -1,0 +1,12 @@
+<h1>{{ "Catalog" }}</h1>
+
+{% for p in p_list %}
+
+<form action="{% url 'polls:catalog' user_id %}">
+  <p> {{p.cat_desc}} </p> <br/>
+  <p> {{p.cat_pid}} </p> <br/>
+  <input type = "text" name = "" />
+  <input type = "submit" value = "Buy" />
+</form>
+
+{% endfor %}
