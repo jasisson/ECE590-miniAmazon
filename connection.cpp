@@ -28,8 +28,7 @@ using namespace pqxx;
 #define WORLD_ID 1006
 #define SIM_SPEED 100000000
 #define TRUCKS 4
-
-int insertDB = 1;
+#define insertDB 1
 
 //this is adpated from code that a google engineer posted online
 template<typename T> bool sendMesgTo(const T & message,
@@ -160,16 +159,13 @@ void connect_to_world(google::protobuf::io::FileOutputStream * simout, google::p
 }
 
 void buy_request(int x, int y, int pid, int whnum, int q, string desc, google::protobuf::io::FileOutputStream * simout, google::protobuf::io::FileInputStream * simin, google::protobuf::io::FileOutputStream * simout2){
+  // send buy request to world
   ACommands buyCommand;
   APurchaseMore *itemDes = buyCommand.add_buy();
   AProduct *product = itemDes->add_things();
-  //std::cout << pid << std::endl;
-  //std::cout << q << std::endl;
-  //std::cout << whnum << std::endl;
-  //std::cout << desc << std::endl;
   itemDes->set_whnum(whnum);
   product->set_id(pid);
-  product->set_description(desc);
+  product->set_description(desc.c_str());
   product->set_count(q);
   buyCommand.set_simspeed(SIM_SPEED);
  
@@ -178,16 +174,19 @@ void buy_request(int x, int y, int pid, int whnum, int q, string desc, google::p
   }
 
   // send message to UPS to start moving truck to that location
-  AmazonCommands buyUPS;
-  UAPack Pack;
-  UAProduct *thing = Pack->add_things();
-  thing->set_id(pid);
-  thing->set_description(desc);
-  thing->set_count(q);
-  
-  std::cout << "x and y:" << x << " " << y << std::endl; 
-  std::cout << buyUPS.req_ship().x() << " " << buyUPS.req_ship().y() << std::endl;
-  //buyUPS.set_req_deliver_truckid(pid%TRUCKS);
+  AmazonCommands buyUPS; 
+  UAShipRequest *UA;
+  buyUPS.set_allocated_req_ship(UA);
+  UA->set_x(x);
+  UA->set_y(y);
+  UAPack *pack;
+  UA->set_allocated_package(pack);
+  pack->set_whnum(whnum);
+  pack->set_shipid(pid);
+  UAProduct *product2 = pack->add_things();
+  product2->set_id(pid);
+  product2->set_description(desc.c_str());
+  product2->set_count(q);
   if(sendMesgTo(buyUPS, simout2)){
     std::cout << "let UPS know of pid (" << pid << ") which is (" << desc << ")\n";
   }
@@ -200,20 +199,17 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
       std::cout << "[ra]"<< response.error() << "\n";
     }
     else{
+      // CASE 1: pack request after receiving information from world that orders have arrived
       int total_arrived = response.arrived_size();
       if(total_arrived > 0){
-	//std::cout << "total arrived: " << total_arrived << std::endl;
 	for(int i = 0; i < total_arrived; i++){
 	  int whnum = response.arrived(i).whnum();
-	  //std::cout << "whnum: " << response.arrived(i).whnum()  << std::endl;
 	  int product_size = response.arrived(i).things_size();
 	  for(int j = 0; j < product_size; j++){
 	    int id = response.arrived(i).things(j).id();
 	    int count = response.arrived(i).things(j).count();
 	    string description = response.arrived(i).things(j).description();
-	    //std::cout << "id: " << id << std::endl;
-	    //std::cout << "count: " << count << std::endl;
-	    //std::cout << "description: " << description << std::endl;
+	    
 	    ACommands packThese;
 	    APack *package = packThese.add_topack();
 	    AProduct *packageInfo = package->add_things();
@@ -222,20 +218,12 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	    packageInfo->set_count(count);
 	    package->set_whnum(whnum);
 	    packThese.set_simspeed(SIM_SPEED);
+	    
 	    std::stringstream command;
-	    //std::cout << "pid: " << id << " and count: " << count << std::endl;
-	    PGresult *all;
-	    string givemeall= "SELECT * FROM orders";
-	    all = PQexec(dbconn, givemeall.c_str());
-	    //std::cout << "total rows in DB: " << PQntuples(all) << std::endl;
 	    command << "SELECT * FROM orders WHERE pid = " << id << " and q = " << count << """";
-	    //std::cout << "command: " << command.str() << std::endl;
 	    PGresult *query;
 	    query = PQexec(dbconn, command.str().c_str());
-	    int total_rows = PQntuples(query);
-	    //std::cout << "total rows returned from query: " << total_rows << std::endl;
 	    int order_no = atoi(PQgetvalue(query, 0, 10));
-	    //std::cout << "order_no: " << order_no << std::endl;
 	    package->set_shipid(order_no);
 	    if(sendMesgTo(packThese, simout)){
 	      std::cout << "new pack request sent to world for product (" << description << ") which has order number: " << order_no << std::endl; 
@@ -243,29 +231,32 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	  }
 	}
       }
+      // CASE 2: we need the truck to be ready, which we receive information from UPS.  
       int total_ready = response.ready_size();
-      //std::cout << "total ready: " << total_ready << std::endl;
       if(total_ready > 0){
+	// if we are in this statement, it means that a package is "complete". We just have to wait for UPS to send us truck information
+	// to TA: this will not execute since we can't send a buy request to UPS, which means we won't be getting a response saying truck has arrived.
+	// I just wanted to show my thought process.
 	for(int k = 0; k < total_ready; k++){
 	  UPSResponses UPSres;
 	  if(recvMesgFrom(UPSres, simin2)){
 	    std::cout << "received message from UPS that truck " << UPSres.resp_truck().truckid() << " has arrived\n";
-	  }
-	  int truckid = UPSres.resp_truck().truckid();
-	  int whnum = UPSres.resp_truck().whnum();
-	  int shipid = UPSres.resp_truck().shipid();
-	  ACommands loadThese;
-	  APutOnTruck *package = loadThese.add_load();
-	  package->set_truckid(truckid); //get actual truck_id
-	  package->set_whnum(whnum);
-	  package->set_shipid(shipid);
-	  if(sendMesgTo(loadThese, simout)){
-	    std::cout << "sent message to world to load item with order number: " << shipid << std::endl;
+	    int truckid = UPSres.resp_truck().truckid();
+	    int whnum = UPSres.resp_truck().whnum();
+	    int shipid = UPSres.resp_truck().shipid();
+	    ACommands loadThese;
+	    APutOnTruck *package = loadThese.add_load();
+	    package->set_truckid(truckid);
+	    package->set_whnum(whnum);
+	    package->set_shipid(shipid);
+	    if(sendMesgTo(loadThese, simout)){
+	      std::cout << "sent message to world to load item with order number: " << shipid << std::endl;
+	    }
 	  }
 	}
       }
+      // CASE 3: This means that the truck is loaded. Here, we send UPS the information that we are ready to ship.
       int total_loaded = response.loaded_size();
-      //std::cout << "total loaded: " << total_loaded << std::endl;
       if(total_loaded > 0){
 	for(int l = 0; l < total_loaded; l++){
 	  int number = response.loaded(l);
@@ -277,6 +268,9 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	    std::cout << "package (" << number << ") has been shipped by UPS" << std::endl;
 	  }
 	  std::stringstream status;
+	  // I update status to 2 for the order so that the front end can display this information.
+	  // This is one of the niceties we implemented where we would be able to tell the user the status of their shipment based
+	  // on the "status" variable in the database.
 	  status << "UPDATE orders SET status = 2 WHERE order_no = " << number << """";
 	  PQexec(dbconn, status.str().c_str()); 
 	}
@@ -286,12 +280,14 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 }
 
 void initialize_database(PGconn *dbconn){
+  // These are just some dummy entries in the database so that I could test without the frontend
+  // in the top. please set "insertDB" to 0 if testing with front end
+  string del = "DELETE FROM orders";
+  PQexec(dbconn, del.c_str());
   if(insertDB){
-    string del = "DELETE FROM orders";
-    PQexec(dbconn, del.c_str());
-    string command = "INSERT INTO orders VALUES(1,1,10,'iphone',0,-1,2,3,105,'tech',1)";
+    string command = "INSERT INTO orders VALUES(1,1,10,'iphone',0,-1,2,3,105,'tech',1,-1)";
     PQexec(dbconn, command.c_str());
-    string command2 = "INSERT INTO orders VALUES(2,2,5,'laptop',0,-1,100,50,100,'tech',2)";
+    string command2 = "INSERT INTO orders VALUES(2,2,5,'laptop',0,-1,100,50,100,'tech',2,-1)";
     PQexec(dbconn, command2.c_str());
   }
 }
@@ -302,13 +298,13 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
   pid_t w;
   if(pid == 0){ // child process
     while(1){
+      // set some time so that we can see prints to cout clearly
       usleep(1000000);
-      // get all the orders that are fresh (i.e. all orders the backend hasn't seen)
+      // get all the orders that are fresh (i.e. all orders the backend hasn't seen, which is indicated by status = 0)
       string command = "SELECT * FROM orders WHERE status = 0";
       PGresult *query;
       query = PQexec(dbconn, command.c_str());
       int total_rows = PQntuples(query);
-      //std::cout << "total_rows: " << total_rows << std::endl;
       if(total_rows != 0){
 	for(int i = 0; i < total_rows; i++){
 	  int total_rows = PQntuples(query);
@@ -323,6 +319,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
 	  buy_request(x, y, pid, whnum, q, desc, simout, simin, simout2);
 	  int order_no = atoi(PQgetvalue(query, i, 10));
 	  std::stringstream update;
+	  // update status to 1 in the database to indicate the backend has seen the order
 	  update << "UPDATE orders SET status = 1 WHERE order_no = " << order_no << """";
 	  PQexec(dbconn, update.str().c_str());
 	  string showall = "SELECT * FROM orders";
@@ -330,6 +327,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
 	  show = PQexec(dbconn, showall.c_str());
 	  int all = PQntuples(show);
 	  for(int n =0; n < all; n++){
+	    // for testing and debugging
 	    std::cout << "Here is the current state of DB -> " << PQgetvalue(show, n, 3) << " " << atoi(PQgetvalue(show, n, 4)) << std::endl; 
 	  }
 	}
@@ -357,7 +355,6 @@ int main(){
   google::protobuf::io::FileOutputStream simout2(ups_socket);
   google::protobuf::io::FileInputStream simin2(ups_socket);
   connect_to_world(&simout, &simin);
-  //create_amazon_ups_socket(&ups_socket);
   
   PGconn *dbconn;
   dbconn = PQconnectdb("dbname=localdb user=postgres password=passw0rd");

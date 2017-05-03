@@ -21,7 +21,8 @@ CREATE TABLE orders(
        ady int4,
        userID int4,
        category text,
-       order_no int4
+       order_no int4,
+       truck_no int4
 );
 
 CREATE INDEX orderID ON orders (pid,wid,status);
