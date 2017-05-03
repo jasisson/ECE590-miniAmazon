@@ -118,7 +118,7 @@ void create_amazon_world_socket(int * amazon_socket){
 
 void create_amazon_ups_socket(int * ups_socket){
   int option = 1;
-  const char * host = "127.0.0.1";
+  const char * host = "10.236.48.12";
   struct hostent * destination_server;
   struct sockaddr_in destination_server_addr;
   
@@ -179,17 +179,15 @@ void buy_request(int x, int y, int pid, int whnum, int q, string desc, google::p
 
   // send message to UPS to start moving truck to that location
   AmazonCommands buyUPS;
-  UAShipRequest *UA = buyUPS.add_req_ship();
-  UAPack *Pack = UA->add_package();
-  UAProduct *product = Pack->add_things();
-  product->set_id(pid);
-  product->set_description(desc);
-  product->set_count(q);
-  Pack->set_whnum(whnum);
-  Pack->set_shipid(pid);
-  UA->set_x(x);
-  UA->set_y(y);
-  UA->set_req_deliver_truckid(pid%TRUCKS);
+  UAPack Pack;
+  UAProduct *thing = Pack->add_things();
+  thing->set_id(pid);
+  thing->set_description(desc);
+  thing->set_count(q);
+  
+  std::cout << "x and y:" << x << " " << y << std::endl; 
+  std::cout << buyUPS.req_ship().x() << " " << buyUPS.req_ship().y() << std::endl;
+  //buyUPS.set_req_deliver_truckid(pid%TRUCKS);
   if(sendMesgTo(buyUPS, simout2)){
     std::cout << "let UPS know of pid (" << pid << ") which is (" << desc << ")\n";
   }
@@ -251,11 +249,11 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	for(int k = 0; k < total_ready; k++){
 	  UPSResponses UPSres;
 	  if(recvMesgFrom(UPSres, simin2)){
-	    std::cout << "received message from UPS that truck " << UPSres.resp_truck.truckid() << " has arrived\n";
+	    std::cout << "received message from UPS that truck " << UPSres.resp_truck().truckid() << " has arrived\n";
 	  }
-	  int truckid = UPSres.resp_truck.truckid();
-	  int whnum = UPSres.resp_truck.whnum();
-	  int shipid = UPSres.resp_truck.shipid();
+	  int truckid = UPSres.resp_truck().truckid();
+	  int whnum = UPSres.resp_truck().whnum();
+	  int shipid = UPSres.resp_truck().shipid();
 	  ACommands loadThese;
 	  APutOnTruck *package = loadThese.add_load();
 	  package->set_truckid(truckid); //get actual truck_id
@@ -274,7 +272,7 @@ void receive_response(PGconn *dbconn, google::protobuf::io::FileOutputStream * s
 	  // send message to UPS that we are done
 	  int truck_id = number % TRUCKS;
 	  AmazonCommands deliver;
-	  deliver.set_truckid(truck_id);
+	  deliver.set_req_deliver_truckid(truck_id);
 	  if(sendMesgTo(deliver, simout2)){
 	    std::cout << "package (" << number << ") has been shipped by UPS" << std::endl;
 	  }
@@ -310,7 +308,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
       PGresult *query;
       query = PQexec(dbconn, command.c_str());
       int total_rows = PQntuples(query);
-      std::cout << "total_rows: " << total_rows << std::endl;
+      //std::cout << "total_rows: " << total_rows << std::endl;
       if(total_rows != 0){
 	for(int i = 0; i < total_rows; i++){
 	  int total_rows = PQntuples(query);
@@ -332,7 +330,7 @@ void start_amazon(PGconn *dbconn, google::protobuf::io::FileOutputStream * simou
 	  show = PQexec(dbconn, showall.c_str());
 	  int all = PQntuples(show);
 	  for(int n =0; n < all; n++){
-	    std::cout << "in START_AMAZON: here is the current state of DB -> " << PQgetvalue(show, n, 3) << " " << atoi(PQgetvalue(show, n, 4)) << std::endl; 
+	    std::cout << "Here is the current state of DB -> " << PQgetvalue(show, n, 3) << " " << atoi(PQgetvalue(show, n, 4)) << std::endl; 
 	  }
 	}
       }
@@ -359,7 +357,7 @@ int main(){
   google::protobuf::io::FileOutputStream simout2(ups_socket);
   google::protobuf::io::FileInputStream simin2(ups_socket);
   connect_to_world(&simout, &simin);
-  create_amazon_ups_socket(&ups_socket);
+  //create_amazon_ups_socket(&ups_socket);
   
   PGconn *dbconn;
   dbconn = PQconnectdb("dbname=localdb user=postgres password=passw0rd");
