@@ -8,7 +8,7 @@ class Catalog(models.Model):
         return self.cat_desc
 
 class Orders(models.Model):
-    order_usrID = models.CharField(max_length=25) #Foreign key?
+    order_usrID = models.CharField(max_length=25) #Foreign key
     order_desc = models.CharField(max_length=100)
     order_pid = models.IntegerField(default=0)
     order_wid = models.IntegerField(default=0)
@@ -26,6 +26,13 @@ class User(models.Model):
     u_name = models.CharField(max_length=200)
     def __str__(self):
         return self.u_name
+
+class Event(models.Model):
+    e_name = models.CharField(max_length=200)
+    e_time = models.DateTimeField('event')
+    e_date = models.CharField(max_length=200, default='Unknown')
+    def __str__(self):
+        return self.e_name
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)

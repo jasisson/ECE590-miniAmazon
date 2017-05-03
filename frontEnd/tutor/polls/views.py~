@@ -4,7 +4,7 @@ from django.template import loader
 from django.urls import reverse
 from django.views import generic
 
-from .models import Choice, Question, User, Catalog
+from .models import Choice, Question, User, Catalog, Orders
 
 class IndexView(generic.ListView):
         template_name = 'polls/index.html'
@@ -30,8 +30,10 @@ def catView(request, user_id): #add userID for nicety?
                         'user_id': user_id,
                 })
         else:
+                c_list = Catalog.objects.all();
                 return render (request, 'polls/catalog.html', {
                         'c_list':c_list,
+                        'user_id': user_id,
                 })
 
 def orderView(request, user_id): #add userID for nicety?
@@ -44,8 +46,17 @@ def orderView(request, user_id): #add userID for nicety?
         else:
                 return render (request, 'polls/orders.html', {
                         'o_list':o_list,
+                        'user_id': user_id,
                 })
-        
+
+def createBuyView(request, user_id):
+        print("called createBuy")
+        cat_pid = request.POST['item']
+        desc = request.POST['desc']
+        buy_order =    Orders(order_usrID=user_id, order_desc = desc, order_pid = cat_pid, order_status = 0, order_quant = request.POST['quant' + cat_pid], order_addrX = request.POST['adrX'+cat_pid], order_addrY = request.POST['adrY'+cat_pid])
+        buy_order.save()
+        return HttpResponseRedirect(reverse('polls:catalog', args=(user_id)))
+
 def LoginView(request):
     return render(request, 'polls/login.html')
 

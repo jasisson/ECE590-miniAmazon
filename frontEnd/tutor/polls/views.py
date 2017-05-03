@@ -30,8 +30,10 @@ def catView(request, user_id): #add userID for nicety?
                         'user_id': user_id,
                 })
         else:
+                c_list = Catalog.objects.all();
                 return render (request, 'polls/catalog.html', {
                         'c_list':c_list,
+                        'user_id': user_id,
                 })
 
 def orderView(request, user_id): #add userID for nicety?
@@ -44,8 +46,17 @@ def orderView(request, user_id): #add userID for nicety?
         else:
                 return render (request, 'polls/orders.html', {
                         'o_list':o_list,
+                        'user_id': user_id,
                 })
-        
+
+def createBuyView(request, user_id):
+        print("called createBuy")
+        cat_pid = request.POST['item']
+        desc = request.POST['desc']
+        buy_order =    Orders(order_usrID=user_id, order_desc = desc, order_pid = cat_pid, order_status = 0, order_quant = request.POST['quant' + cat_pid], order_adrX = request.POST['adrX'+cat_pid], order_adrY = request.POST['adrY'+cat_pid])
+        buy_order.save()
+        return HttpResponseRedirect(reverse('polls:catalog', args=(user_id)))
+
 def LoginView(request):
     return render(request, 'polls/login.html')
 

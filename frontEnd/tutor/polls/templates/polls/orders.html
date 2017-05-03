@@ -1,20 +1,20 @@
 <h1>{{ "Order(s)" }}</h1>
 
 {% for o in o_list %}
-
-<form method action="{% url 'polls:orders' user_id %}">
-  <div>
-    <p> {{o.cat_desc}} </p>
-    <p> {{o.cat_pid}} </p>
+<fieldset>
+  <legend>Order {{ forloop.counter }}</legend>
+  <form method action="{% url 'polls:orders' user_id %}">
+    <div>
+      <p> <b> {{o.order_desc}} </b> </p>
+      <p> {{o.order_desc}} </p>
+      <p> {{o.order_quant}} </p>
+      <p> Status: {{o.order_status}} </p>
     </div>
-  <div style="float:left";>
-    <input type = "text" name = "addrX" />
-    <input type = "text" name = "addrY" />
-    </div>
-    <input type = "submit" value = "Buy" />
-</form>
-
+  </form>
+</fieldset>
 {% endfor %}
+
+<br>
 
 <form action="{% url 'polls:catalog' user_id %}" method="get">
   {% csrf_token %}
