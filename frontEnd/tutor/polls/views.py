@@ -30,7 +30,7 @@ def catView(request, user_id): #add userID for nicety?
                         'user_id': user_id,
                 })
         else:
-                c_list = Catalog.objects.all();
+                c_list = Catalog.objects.order_by('cat_type_num');
                 return render (request, 'polls/catalog.html', {
                         'c_list':c_list,
                         'user_id': user_id,

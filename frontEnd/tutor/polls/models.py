@@ -4,6 +4,7 @@ class Catalog(models.Model):
     cat_desc = models.CharField(max_length=100)
     cat_pid = models.IntegerField(default=0)
     cat_type = models.CharField(max_length=100)
+    cat_type_num = models.IntegerField(default=0)
     def __str__(self):
         return self.cat_desc
 

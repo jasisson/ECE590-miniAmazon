@@ -13,9 +13,9 @@
       <label for="box1{{ forloop.counter }}">Quant</label>
       <input type="text" name="quant{{ c.cat_pid }}" id="box1{{ forloop.counter }}"><br>
       <label for="box2{{ forloop.counter }}">AddrX</label>
-      <input type="text" name="addrX{{ c.cat_pid }}" id="box2{{ forloop.counter }}"><br>
+      <input type="text" name="adrX{{ c.cat_pid }}" id="box2{{ forloop.counter }}"><br>
       <label for="box3{{ forloop.counter }}">AddrY</label>
-      <input type="text" name="addrY{{ c.cat_pid }}" id="box3{{ forloop.counter }}"><br>
+      <input type="text" name="adrY{{ c.cat_pid }}" id="box3{{ forloop.counter }}"><br>
       <input type="hidden" name="item" value="{{c.cat_pid}}" />
       <input type="hidden" name="desc" value="{{c.cat_desc}}" />
     </div>
@@ -26,10 +26,21 @@
 
 <br>
 
+<form method="get" action="/search/">
+  <label for="id_q">Search:</label>
+  <input type="text" name="q" id="id_q"/>
+  <input type="submit" value="Submit"/>
+</form>
+<br>
+
 <div style="float:left";>
   <form action="{% url 'polls:orders' user_id %}" method="get">
     {% csrf_token %}
     <input type="submit" value="Orders" />
+  </form>
+  <form action="{% url 'polls:catalog' user_id %}" method="post">
+    {% csrf_token %}
+  <input type="submit" value="Recommended" />
   </form>
   <form action="{% url 'polls:login' %}" method="get">
     {% csrf_token %}

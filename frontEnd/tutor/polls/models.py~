@@ -8,7 +8,7 @@ class Catalog(models.Model):
         return self.cat_desc
 
 class Orders(models.Model):
-    order_usrID = models.CharField(max_length=25) #Foreign key
+    order_usrID = models.CharField(max_length=25) #Foreign key?
     order_desc = models.CharField(max_length=100)
     order_pid = models.IntegerField(default=0)
     order_wid = models.IntegerField(default=0)

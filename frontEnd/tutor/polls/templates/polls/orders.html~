@@ -3,7 +3,7 @@
 {% for o in o_list %}
 <fieldset>
   <legend>Order {{ forloop.counter }}</legend>
-  <form method action="{% url 'polls:order' user_id %}">
+  <form method action="{% url 'polls:orders' user_id %}">
     <div>
       <p> <b> {{o.order_desc}} </b> </p>
       <p> {{o.order_desc}} </p>
