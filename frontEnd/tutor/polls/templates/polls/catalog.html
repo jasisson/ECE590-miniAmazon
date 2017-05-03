@@ -1,21 +1,27 @@
 <h1>{{ "Catalog" }}</h1>
 
 {% for c in c_list %}
-
-<form method action="{% url 'polls:catalog' user_id %}">
-  <div>
-    <p> {{c.cat_desc}} </p>
-    <p> {{c.cat_pid}} </p>
+<fieldset>
+  <legend>Item {{ forloop.counter }}</legend>
+  <form method action="{% url 'polls:catalog' user_id %}">
+    <div>
+      <p> <b> {{c.cat_desc}} </b> </p>
+      <!--<p> {{c.cat_pid}} </p>-->
     </div>
-  <div style="float:left";>
-    <input type = "text" name = "addrX" />
-    <input type = "text" name = "addrY" />
+    <div style="float:left";>
+      <label for="box1{{ forloop.counter }}">Quant</label>
+      <input type="text" name="quant{{ c.cat_pid }}" id="box1{{ forloop.counter }}"><br>
+      <label for="box2{{ forloop.counter }}">AddrX</label>
+      <input type="text" name="addrX{{ c.cat_pid }}" id="box2{{ forloop.counter }}"><br>
+      <label for="box3{{ forloop.counter }}">AddrY</label>
+      <input type="text" name="addrY{{ c.cat_pid }}" id="box3{{ forloop.counter }}"><br>
     </div>
     <input type = "submit" value = "Buy" />
-</form>
-
+  </form>
+</fieldset>
 {% endfor %}
 
+<br>
 
 <div style="float:left";>
   <form action="{% url 'polls:orders' user_id %}" method="get">
